@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Server.Dto
 {
-    public class UserDto
+    public class UserEditDto
     {
         public string Username { get; set; }
         public string Password { get; set; }
@@ -15,5 +12,6 @@ namespace Server.Dto
         public string Address { get; set; }
         public string UserImage { get; set; }
         public string TypeOfUser { get; set; }
+        public long Id { get; set; }
     }
 }

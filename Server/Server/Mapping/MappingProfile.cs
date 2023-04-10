@@ -13,6 +13,7 @@ namespace Server.Mapping
         public MappingProfile()
         {
             CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<Article, ArticleDto>().ReverseMap();
         }
     }
 }

@@ -70,9 +70,8 @@ namespace Server
             });
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("SamoOdabrani", policy => policy.RequireClaim("Neki_moj_claim")); //Ovde mozemo kreirati pravilo za validaciju nekog naseg claima
+                options.AddPolicy("user", policy => policy.RequireClaim("user")); //Ovde mozemo kreirati pravilo za validaciju nekog naseg claima
             });
-
             //Dodajemo semu autentifikacije i podesavamo da se radi o JWT beareru
             services.AddAuthentication(opt => {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -106,7 +105,9 @@ namespace Server
             });
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IArticleRepository, ArticleRepository>();
             var mapperConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new MappingProfile());
@@ -114,6 +115,7 @@ namespace Server
 
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

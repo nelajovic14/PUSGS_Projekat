@@ -10,5 +10,9 @@ namespace Server.Repository.Interfaces
     {
         User Add(User newUser);
         User Find(User user);
+        User Edit(User user);
+        User Verificate(User user);
+        User FindById(long Id);
+       
     }
 }

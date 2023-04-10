@@ -9,8 +9,10 @@ namespace Server.Services.Interfaces
 {
     public interface IUserService
     {
-        List<UserDto> GetAll();
-        UserDto AddStudent(UserDto newUser);
-        string LogIn(UserDto dto);
+        UserDto AddUser(UserDto newUser);
+        LoginResponseDto LogIn(UserLoginDto dto);
+        UserEditDto Edit(UserEditDto dto);
+        UserLoginDto Verificate(UserLoginDto userLoginDto);
+        UserEditDto GetUser(long id);
     }
 }

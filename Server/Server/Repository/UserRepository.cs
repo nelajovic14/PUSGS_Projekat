@@ -19,12 +19,30 @@ namespace Server.Repository
         public User Add(User newUser)
         {
             _orderDbContext.Users.Add(newUser);
+            _orderDbContext.SaveChanges();
             return newUser;
+        }
+
+        public User Edit(User user)
+        {
+            _orderDbContext.Users.Update(user);
+            _orderDbContext.SaveChanges();
+            return user;
         }
 
         public User Find(User user)
         {
             return _orderDbContext.Users.SingleOrDefault<User>(u => String.Equals(u.Username, user.Username));
+        }
+        public User FindById(long Id)
+        {
+            return _orderDbContext.Users.SingleOrDefault<User>(u => String.Equals(u.Id, Id));
+        }
+        public User Verificate(User user)
+        {
+            _orderDbContext.Users.Update(user);
+            _orderDbContext.SaveChanges();
+            return user;
         }
     }
 }

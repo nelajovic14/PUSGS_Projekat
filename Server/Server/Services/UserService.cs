@@ -19,65 +19,127 @@ namespace Server.Services
 {
     public class UserService : IUserService
     {
-        private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
         private readonly IConfigurationSection _secretKey;
-        public UserService(IMapper mapper,IUserRepository userRepository,IConfiguration config)
+        public UserService(IUserRepository userRepository,IConfiguration config)
         {
-            _mapper = mapper;
             _userRepository = userRepository;
             _secretKey = config.GetSection("SecretKey");
         }
 
-        public UserDto AddStudent(UserDto newUser)
+        public UserDto AddUser(UserDto dto)
         {
-            User user = _mapper.Map<User>(newUser);
+            User user = new User {Username=dto.Username, Address = dto.Address, DateOfBirth = dto.DateOfBirth, Email = dto.Email, NameLastname = dto.NameLastname, UserImage = dto.UserImage, Password = BCrypt.Net.BCrypt.HashPassword(dto.Password), Verificated = false };
+            if (dto.TypeOfUser == "ADMINISTRATOR")
+                user.TypeOfUser = Enums.UserType.ADMINISTRATOR;
+            if (dto.TypeOfUser == "KUPAC")
+                user.TypeOfUser = Enums.UserType.KUPAC;
+            if (dto.TypeOfUser == "PRODAVAC")
+                user.TypeOfUser = Enums.UserType.PRODAVAC;
+
             User u=_userRepository.Add(user);
-            return _mapper.Map<UserDto>(u);
+            return new UserDto {Username=u.Username, Address = u.Address, DateOfBirth = u.DateOfBirth, Email = u.Email, NameLastname = u.NameLastname, UserImage = u.UserImage, Password = u.Password, TypeOfUser = u.TypeOfUser.ToString() };
         }
 
-        public List<UserDto> GetAll()
+        public UserEditDto Edit(UserEditDto dto)
         {
-            throw new NotImplementedException();
+            User user = new User { Username = dto.Username, Address = dto.Address, DateOfBirth = dto.DateOfBirth, Email = dto.Email, NameLastname = dto.NameLastname, UserImage = dto.UserImage, Password = BCrypt.Net.BCrypt.HashPassword(dto.Password) };
+            if (dto.TypeOfUser == "ADMINISTRATOR")
+                user.TypeOfUser = Enums.UserType.ADMINISTRATOR;
+            if (dto.TypeOfUser == "KUPAC")
+                user.TypeOfUser = Enums.UserType.KUPAC;
+            if (dto.TypeOfUser == "PRODAVAC")
+                user.TypeOfUser = Enums.UserType.PRODAVAC;
+            user = _userRepository.FindById(user.Id);
+           User u= _userRepository.Edit(user);
+            if (u == null)
+                return null;
+            else
+            {
+                return new UserEditDto { Username = u.Username, Address = u.Address, DateOfBirth = u.DateOfBirth, Email = u.Email, NameLastname = u.NameLastname, UserImage = u.UserImage, Password = u.Password, TypeOfUser = u.TypeOfUser.ToString(), Id=u.Id };
+            }
         }
 
-        public string LogIn(UserDto dto)
+        
+
+        public UserEditDto GetUser(long id)
         {
-            User user = _mapper.Map<User>(dto);
+            
+            User u = _userRepository.FindById(id);
+            if (u == null)
+                return null;
+            else
+            {
+                return new UserEditDto { Username = u.Username, Address = u.Address, DateOfBirth = u.DateOfBirth, Email = u.Email, NameLastname = u.NameLastname, UserImage = u.UserImage, Password = u.Password, TypeOfUser = u.TypeOfUser.ToString(), Id = u.Id };
+            }
+        }
+
+        public LoginResponseDto LogIn(UserLoginDto dto)
+        {
+            User user = new User { Username = dto.Username, Password = dto.Password };
+            
+
             user = _userRepository.Find(user);
             if (user == null)
                 return null;
-
-            if (BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))//Uporedjujemo hes pasvorda iz baze i unetog pasvorda
+            if (user.Verificated == true)
             {
-                List<Claim> claims = new List<Claim>();
+                if (BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))//Uporedjujemo hes pasvorda iz baze i unetog pasvorda
+                {
+                    List<Claim> claims = new List<Claim>();
 
-                if (user.TypeOfUser == Enums.UserType.ADMINISTRATOR)
-                    claims.Add(new Claim(ClaimTypes.Role, "administrator")); //Add user type to claim
-                else if (user.TypeOfUser == Enums.UserType.PRODAVAC)
-                    claims.Add(new Claim(ClaimTypes.Role, "prodavac"));
-                else if(user.TypeOfUser==Enums.UserType.KUPAC)
-                    claims.Add(new Claim(ClaimTypes.Role, "kupac"));
+                    if (user.TypeOfUser == Enums.UserType.ADMINISTRATOR)
+                        claims.Add(new Claim(ClaimTypes.Role, "admin")); //Add user type to claim
+                    else if (user.TypeOfUser == Enums.UserType.PRODAVAC)
+                        claims.Add(new Claim(ClaimTypes.Role, "prodavac"));
+                    else if (user.TypeOfUser == Enums.UserType.KUPAC)
+                        claims.Add(new Claim(ClaimTypes.Role, "kupac"));
 
 
-                claims.Add(new Claim(ClaimTypes.Role, "user"));
+                    claims.Add(new Claim(ClaimTypes.Role, "user"));
 
-                SymmetricSecurityKey secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey.Value));
-                var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-                var tokeOptions = new JwtSecurityToken(
-                    issuer: "http://localhost:44386", //url servera koji je izdao token
-                    claims: claims, //claimovi
-                    expires: DateTime.Now.AddYears(1), //vazenje tokena u minutama
-                    signingCredentials: signinCredentials //kredencijali za potpis
-                );
-                string tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
-
-                return tokenString;
+                    SymmetricSecurityKey secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey.Value));
+                    var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+                    var tokeOptions = new JwtSecurityToken(
+                        issuer: "http://localhost:44316", //url servera koji je izdao token
+                        claims: claims, //claimovi
+                        expires: DateTime.Now.AddYears(1), //vazenje tokena u minutama
+                        signingCredentials: signinCredentials //kredencijali za potpis
+                    );
+                    string tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
+                    LoginResponseDto loginResponseDto = new LoginResponseDto { Token = tokenString, UserEdit = new UserEditDto { Username = user.Username, Address = user.Address, DateOfBirth = user.DateOfBirth, Email = user.Email, NameLastname = user.NameLastname, UserImage = user.UserImage, Password = user.Password, TypeOfUser = user.TypeOfUser.ToString(), Id = user.Id }, LogedIn = true };
+                    return loginResponseDto;
+                }
+                else
+                {
+                    return new LoginResponseDto { LogedIn = false };
+                }
             }
             else
             {
-                return null;
+                return new LoginResponseDto { LogedIn = false };
             }
+        }
+
+        public UserLoginDto Verificate(UserLoginDto userLoginDto)
+        {
+            User user = new User { Username = userLoginDto.Username, Password = userLoginDto.Password };
+
+
+            user = _userRepository.Find(user);
+            if (user != null)
+            {
+                user.Verificated = true;
+                User u = _userRepository.Verificate(user);
+                if (u == null)
+                    return null;
+                else
+                {
+                    return new UserLoginDto { Username = u.Username, Password = u.Password };
+                }
+            }
+            else
+                return null;
         }
     }
 }
