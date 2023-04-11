@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Server.Infrastructure;
+using Server.Initializer;
+using Server.Initializer.Interfaces;
 using Server.Mapping;
 using Server.Repository;
 using Server.Repository.Interfaces;
@@ -104,10 +106,13 @@ namespace Server
                 options.AddPolicy("user", policy => policy.RequireClaim("user")); //Ovde mozemo kreirati pravilo za validaciju nekog naseg claima
             });
 
+            services.AddScoped<IUserInitializer, UserInitializer>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IArticleService, ArticleService>();
+            services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IArticleRepository, ArticleRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
             var mapperConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new MappingProfile());
@@ -127,7 +132,11 @@ namespace Server
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Server v1"));
             }
-
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                // koristi se za inicijalizaciju podataka
+                scope.ServiceProvider.GetRequiredService<IUserInitializer>().InitializeUseres();
+            }
             app.UseHttpsRedirection();
             app.UseCors(_cors);
             app.UseRouting();

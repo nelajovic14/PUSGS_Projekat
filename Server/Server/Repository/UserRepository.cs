@@ -36,13 +36,23 @@ namespace Server.Repository
         }
         public User FindById(long Id)
         {
-            return _orderDbContext.Users.SingleOrDefault<User>(u => String.Equals(u.Id, Id));
+            return _orderDbContext.Users.SingleOrDefault<User>(u => u.Id==Id);
         }
         public User Verificate(User user)
         {
             _orderDbContext.Users.Update(user);
             _orderDbContext.SaveChanges();
             return user;
+        }
+        public List<User> GetAll()
+        {
+            return _orderDbContext.Users.ToList();
+        }
+
+        public void Remove(User entity)
+        {
+            _orderDbContext.Users.Remove(entity);
+            _orderDbContext.SaveChanges();
         }
     }
 }

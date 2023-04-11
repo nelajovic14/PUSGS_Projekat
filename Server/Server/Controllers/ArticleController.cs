@@ -21,6 +21,24 @@ namespace Server.Controllers
         public IActionResult AddArticle([FromBody] ArticleDto articleDto)
         {
             return Ok(_articleService.AddNew(articleDto));
-        } 
+        }
+        [HttpGet("{id}")]
+        [Authorize(Roles ="user")]
+        public IActionResult Get(int id)
+        {
+            return Ok(_articleService.Get(id));
+        }
+        [HttpPut]
+        [Authorize(Roles ="prodavac")]
+        public IActionResult Put([FromBody] ArticleDto article)
+        {
+            return Ok(_articleService.Edit(article));
+        }
+        [HttpDelete]
+        [Authorize(Roles = "prodavac")]
+        public IActionResult Delete([FromBody] ArticleDto article)
+        {
+            return Ok(_articleService.Delete(article.Id));
+        }
     }
 }

@@ -19,8 +19,31 @@ namespace Server.Services
         public ArticleDto AddNew(ArticleDto article)
         {
             Article articleNew=_mapper.Map<Article>(article);
-            _articleRepository.AddNew(articleNew);
+            Article a=_articleRepository.AddNew(articleNew);
+            article.Id = a.Id;
             return article;
+        }
+
+        public bool Delete(long Id)
+        {
+            if(_articleRepository.DeleteArticle(Id))
+                return true;
+            else
+                return false;
+        }
+
+        public ArticleDto Edit(ArticleDto article)
+        {
+            Article article1=_mapper.Map<Article>(article);
+            _articleRepository.Edit(article1);
+            return article;
+        }
+
+        public ArticleDto Get(int Id)
+        {
+            Article article = _articleRepository.GetArticle(Id);
+            ArticleDto articleDto=_mapper.Map<ArticleDto>(article);
+            return articleDto;
         }
     }
 }

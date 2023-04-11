@@ -13,6 +13,8 @@ namespace Server.Repository.Interfaces
         User Edit(User user);
         User Verificate(User user);
         User FindById(long Id);
-       
+        List<User> GetAll();
+        void Remove(User entity);
+
     }
 }
