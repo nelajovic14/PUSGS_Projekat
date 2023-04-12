@@ -70,10 +70,7 @@ namespace Server
                     }
                 });
             });
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("user", policy => policy.RequireClaim("user")); //Ovde mozemo kreirati pravilo za validaciju nekog naseg claima
-            });
+            
             //Dodajemo semu autentifikacije i podesavamo da se radi o JWT beareru
             services.AddAuthentication(opt => {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -91,11 +88,10 @@ namespace Server
                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]))//navodimo privatni kljuc kojim su potpisani nasi tokeni
                };
            });
-
             services.AddCors(options =>
             {
                 options.AddPolicy(name: _cors, builder => {
-                    builder.WithOrigins("https://localhost:3000")//Ovde navodimo koje sve aplikacije smeju kontaktirati nasu,u ovom slucaju nas Angular front
+                    builder.WithOrigins("http://localhost:3000", "https://localhost:3000")//Ovde navodimo koje sve aplikacije smeju kontaktirati nasu
                            .AllowAnyHeader()
                            .AllowAnyMethod()
                            .AllowCredentials();
@@ -105,7 +101,6 @@ namespace Server
             {
                 options.AddPolicy("user", policy => policy.RequireClaim("user")); //Ovde mozemo kreirati pravilo za validaciju nekog naseg claima
             });
-
             services.AddScoped<IInitializer, UserInitializer>();
             services.AddScoped<IInitializer, ArticleInitializer>();
             services.AddScoped<IUserService, UserService>();
