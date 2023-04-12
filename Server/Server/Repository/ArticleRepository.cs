@@ -1,6 +1,7 @@
 ﻿using Server.Infrastructure;
 using Server.Models;
 using Server.Repository.Interfaces;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Server.Repository
@@ -37,9 +38,28 @@ namespace Server.Repository
             return article;
         }
 
+        public List<Article> GetAll()
+        {
+            return _orderDbContext.Articles.ToList();   
+        }
+
         public Article GetArticle(long Id)
         {
             return _orderDbContext.Articles.SingleOrDefault<Article>(u =>u.Id==Id);
+        }
+
+        public List<Article> GetArticlesForOwner(long Id)
+        {
+            List<Article> articles = _orderDbContext.Articles.ToList();
+            List<Article> userArticles = new List<Article>();
+            foreach (var a in articles)
+            {
+                if (a.UserId == Id)
+                {
+                    userArticles.Add(a);
+                }
+            }
+            return userArticles;
         }
     }
 }

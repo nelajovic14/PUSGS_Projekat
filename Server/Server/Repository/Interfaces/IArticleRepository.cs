@@ -1,4 +1,5 @@
 ﻿using Server.Models;
+using System.Collections.Generic;
 
 namespace Server.Repository.Interfaces
 {
@@ -8,5 +9,7 @@ namespace Server.Repository.Interfaces
         Article GetArticle(long Id);
         Article Edit(Article article);
         bool DeleteArticle(long Id);
+        List<Article> GetAll();
+        List<Article> GetArticlesForOwner(long Id);
     }
 }

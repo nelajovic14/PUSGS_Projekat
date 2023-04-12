@@ -16,6 +16,7 @@ namespace Server.Models
         public User Customer { get; set; }
         public long UserId { get; set; }
         public Article Article { get; set; }
+        public long ArticleId { get; set; }
         public DateTime OrderTime { get; set; }
         public DateTime DeliveryTime { get; set; }
         public bool IsDeliverd { get; set; }

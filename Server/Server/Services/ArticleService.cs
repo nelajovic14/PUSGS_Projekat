@@ -3,6 +3,7 @@ using Server.Dto;
 using Server.Models;
 using Server.Repository.Interfaces;
 using Server.Services.Interfaces;
+using System.Collections.Generic;
 
 namespace Server.Services
 {
@@ -44,6 +45,16 @@ namespace Server.Services
             Article article = _articleRepository.GetArticle(Id);
             ArticleDto articleDto=_mapper.Map<ArticleDto>(article);
             return articleDto;
+        }
+
+        public List<ArticleDto> GetAll()
+        {
+            List<ArticleDto> articleDtos = new List<ArticleDto>();
+            foreach(Article a in _articleRepository.GetAll())
+            {
+                articleDtos.Add(_mapper.Map<ArticleDto>(a));
+            }
+            return articleDtos;
         }
     }
 }

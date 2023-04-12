@@ -106,7 +106,8 @@ namespace Server
                 options.AddPolicy("user", policy => policy.RequireClaim("user")); //Ovde mozemo kreirati pravilo za validaciju nekog naseg claima
             });
 
-            services.AddScoped<IUserInitializer, UserInitializer>();
+            services.AddScoped<IInitializer, UserInitializer>();
+            services.AddScoped<IInitializer, ArticleInitializer>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IOrderService, OrderService>();
@@ -135,7 +136,7 @@ namespace Server
             using (var scope = app.ApplicationServices.CreateScope())
             {
                 // koristi se za inicijalizaciju podataka
-                scope.ServiceProvider.GetRequiredService<IUserInitializer>().InitializeUseres();
+                scope.ServiceProvider.GetRequiredService<IInitializer>().Initialize();
             }
             app.UseHttpsRedirection();
             app.UseCors(_cors);

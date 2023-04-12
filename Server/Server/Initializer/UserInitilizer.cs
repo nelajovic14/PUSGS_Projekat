@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Server.Initializer
 {
-    public class UserInitializer : IUserInitializer
+    public class UserInitializer : IInitializer
     {
         private IUserRepository _userRepository;
 
@@ -14,7 +14,7 @@ namespace Server.Initializer
             _userRepository = userRepository;
         }
 
-        public void InitializeUseres()
+        public void Initialize()
         {
             List<User> users = _userRepository.GetAll();
 

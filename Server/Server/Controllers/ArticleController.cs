@@ -40,5 +40,11 @@ namespace Server.Controllers
         {
             return Ok(_articleService.Delete(article.Id));
         }
+        [HttpGet]
+        [Authorize(Roles ="user")]
+        public IActionResult GetAll()
+        {
+            return Ok(_articleService.GetAll());
+        }
     }
 }

@@ -18,6 +18,7 @@ namespace Server.Infrastructure.Configuration
                 .WithMany(x => x.Orders)
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(x => x.Article);
 
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Server.Dto;
 using Server.Models;
+using System.Collections.Generic;
 
 namespace Server.Services.Interfaces
 {
@@ -9,5 +10,6 @@ namespace Server.Services.Interfaces
         ArticleDto Get(int Id);
         ArticleDto Edit(ArticleDto article);
         bool Delete(long Id);
+        List<ArticleDto> GetAll(); 
     }
 }
