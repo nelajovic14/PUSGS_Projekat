@@ -42,6 +42,10 @@ namespace Server
         {
 
             services.AddControllers();
+            services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
             services.AddDbContext<OrderDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("OrderDatabase")));
             services.AddSwaggerGen(c =>
             {
@@ -103,6 +107,7 @@ namespace Server
             });
             services.AddScoped<IInitializer, UserInitializer>();
             services.AddScoped<IInitializer, ArticleInitializer>();
+            services.AddScoped<IInitializer, OrderInitializer>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IOrderService, OrderService>();

@@ -10,11 +10,13 @@ namespace Server.Services
     public class ArticleService : IArticleService
     {
         private readonly IArticleRepository _articleRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        public ArticleService(IMapper mapper,IArticleRepository articleRepository)
+        public ArticleService(IMapper mapper,IArticleRepository articleRepository, IUserRepository userRepository)
         {
             _articleRepository = articleRepository;
             _mapper = mapper;
+            _userRepository = userRepository;
         }
 
         public ArticleDto AddNew(ArticleDto article)
@@ -44,6 +46,10 @@ namespace Server.Services
         {
             Article article = _articleRepository.GetArticle(Id);
             ArticleDto articleDto=_mapper.Map<ArticleDto>(article);
+            //if(articleDto.User == null)
+            //{
+            //    articleDto.User = _mapper.Map<UserDto>(_userRepository.FindById(article.UserId));
+            //}
             return articleDto;
         }
 

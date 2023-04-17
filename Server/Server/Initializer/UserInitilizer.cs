@@ -20,14 +20,12 @@ namespace Server.Initializer
 
             if (users.Count > 0)
             {
-                foreach (User user in users)
-                {
-                    _userRepository.Remove(user);
-                }
+                
+                return;
             }
-            _userRepository.Add(new User() { Username = "admin", Password = BCrypt.Net.BCrypt.HashPassword("admin"), NameLastname ="Admin", TypeOfUser = Enums.UserType.ADMINISTRATOR, Email="admin@gmail.com", Verificated=true});
-            _userRepository.Add(new User() { Username = "kupac", Password = BCrypt.Net.BCrypt.HashPassword("kupac"), NameLastname ="Kupac", TypeOfUser = Enums.UserType.KUPAC, Email="kupac@gmail.com", Verificated=true});
-            _userRepository.Add(new User() { Username = "prodavac", Password = BCrypt.Net.BCrypt.HashPassword("prodavac"), NameLastname ="Prodavac", TypeOfUser = Enums.UserType.PRODAVAC, Email="prodavac@gmail.com", Verificated=true});
+            _userRepository.Add(new User() { Username = "admin", Password = BCrypt.Net.BCrypt.HashPassword("admin"), NameLastname ="Admin/Admin", TypeOfUser = Enums.UserType.ADMINISTRATOR, Email="admin@gmail.com", Verificated=true});
+            _userRepository.Add(new User() { Username = "kupac", Password = BCrypt.Net.BCrypt.HashPassword("kupac"), NameLastname ="Kupac/Kupac", TypeOfUser = Enums.UserType.KUPAC, Email="kupac@gmail.com", Verificated=true, Address="sime milosevica bb"});
+            _userRepository.Add(new User() { Username = "prodavac", Password = BCrypt.Net.BCrypt.HashPassword("prodavac"), NameLastname ="Prodavac/Prodavac", TypeOfUser = Enums.UserType.PRODAVAC, Email="prodavac@gmail.com", Verificated=true});
 
         }
     }

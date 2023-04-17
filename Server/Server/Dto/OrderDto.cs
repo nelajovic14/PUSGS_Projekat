@@ -9,9 +9,9 @@ namespace Server.Dto
         public double Price { get; set; }
         public string Address { get; set; }
         public string Comment { get; set; }
-        //public User Customer { get; set; }
+        public User Customer { get; set; }
         public long UserId { get; set; }
-        //public Article Article { get; set; }
+        public Article Article { get; set; }
         public long ArticleId { get; set; }
         public DateTime OrderTime { get; set; }
         public long Id { get; set; }

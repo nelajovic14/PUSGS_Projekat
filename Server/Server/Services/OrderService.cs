@@ -62,6 +62,11 @@ namespace Server.Services
                 foreach(var o in orders)
                 {
                     OrderDto orderDto = _mapper.Map<OrderDto>(o);
+                    if (orderDto.Article == null)
+                    {
+                        Article pomArt = _articleRepository.GetArticle(orderDto.ArticleId);
+                        orderDto.Article = pomArt;
+                    }
                     orderDtos.Add(orderDto);
                 }
                 return orderDtos;
@@ -75,52 +80,62 @@ namespace Server.Services
 
                     if (articles.Find(x => x.Id == o.ArticleId)!=null)
                     {
-                        if (old)
-                        {
-                            if (o.DeliveryTime < DateTime.Now && o.IsDeliverd == true)
+                        //if (old)
+                        //{
+                            if ( o.IsDeliverd == true)
                             {
-                                OrderDto orderDto = _mapper.Map<OrderDto>(o);
-                                orderDtos.Add(orderDto);
-                            }
-                        }
-                        else
-                        {
-                            if (o.DeliveryTime > DateTime.Now && o.IsDeliverd == true)
+                            OrderDto orderDto = _mapper.Map<OrderDto>(o);
+                            if (orderDto.Article == null)
                             {
-                                OrderDto orderDto = _mapper.Map<OrderDto>(o);
-                                orderDtos.Add(orderDto);
+                                Article pomArt = _articleRepository.GetArticle(orderDto.ArticleId);
+                                orderDto.Article = pomArt;
                             }
+                            orderDtos.Add(orderDto);
                         }
+                        //}
+                        //else
+                        //{
+                            //if (o.DeliveryTime > DateTime.Now && o.IsDeliverd == true)
+                            //{
+                            //    OrderDto orderDto = _mapper.Map<OrderDto>(o);
+                            //    orderDtos.Add(orderDto);
+                            //}
+                       // }
                     }
                 }
                 return orderDtos;
             }
             else
             {
-                if (old)
-                {
+                //if (old)
+                //{
                     List<Order> orders = _orderRepository.GetAllFromUser(id);
                     foreach (var o in orders)
                     {
-                        if (o.DeliveryTime < DateTime.Now && o.IsDeliverd==true)
+                        if ( o.IsDeliverd==true)
                         {
                             OrderDto orderDto = _mapper.Map<OrderDto>(o);
+                            if (orderDto.Article == null)
+                            {
+                            Article pomArt = _articleRepository.GetArticle(orderDto.ArticleId);
+                            orderDto.Article = pomArt;
+                            }
                             orderDtos.Add(orderDto);
                         }
                     }
-                }
-                else
-                {
-                    List<Order> orders = _orderRepository.GetAllFromUser(id);
-                    foreach (var o in orders)
-                    {
-                        if (o.DeliveryTime > DateTime.Now && o.IsDeliverd == true)
-                        {
-                            OrderDto orderDto = _mapper.Map<OrderDto>(o);
-                            orderDtos.Add(orderDto);
-                        }
-                    }
-                }
+                //}
+                //else
+                //{
+                    //List<Order> orders = _orderRepository.GetAllFromUser(id);
+                    //foreach (var o in orders)
+                    //{
+                    //    if (o.DeliveryTime > DateTime.Now && o.IsDeliverd == true)
+                    //    {
+                    //        OrderDto orderDto = _mapper.Map<OrderDto>(o);
+                    //        orderDtos.Add(orderDto);
+                    //    }
+                    //}
+                //}
                 return orderDtos;
             }
         }
@@ -131,6 +146,11 @@ namespace Server.Services
             foreach (var o in orders)
             {
                 OrderDto orderDto = _mapper.Map<OrderDto>(o);
+                if (orderDto.Article == null)
+                {
+                    Article pomArt = _articleRepository.GetArticle(orderDto.ArticleId);
+                    orderDto.Article = pomArt;
+                }
                 orderDtos.Add(orderDto);
             }
             return orderDtos;

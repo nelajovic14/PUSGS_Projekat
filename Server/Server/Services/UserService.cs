@@ -29,28 +29,40 @@ namespace Server.Services
 
         public UserDto AddUser(UserDto dto)
         {
-            User user = new User {Username=dto.Username, Address = dto.Address, DateOfBirth = dto.DateOfBirth, Email = dto.Email, NameLastname = dto.NameLastname, UserImage = dto.UserImage, Password = BCrypt.Net.BCrypt.HashPassword(dto.Password), Verificated = false };
+            User user = new User {Username=dto.Username, Address = dto.Address, DateOfBirth = dto.DateOfBirth, Email = dto.Email, NameLastname = dto.NameLastname, UserImage = dto.UserImage, Password = BCrypt.Net.BCrypt.HashPassword(dto.Password) };
             if (dto.TypeOfUser == "ADMINISTRATOR")
+            {
                 user.TypeOfUser = Enums.UserType.ADMINISTRATOR;
+                user.Verificated = true;
+            }
             if (dto.TypeOfUser == "KUPAC")
+            {
                 user.TypeOfUser = Enums.UserType.KUPAC;
+                user.Verificated = true;
+            }
             if (dto.TypeOfUser == "PRODAVAC")
+            {
                 user.TypeOfUser = Enums.UserType.PRODAVAC;
-
+                user.Verificated = false;
+            }
             User u=_userRepository.Add(user);
             return new UserDto {Username=u.Username, Address = u.Address, DateOfBirth = u.DateOfBirth, Email = u.Email, NameLastname = u.NameLastname, UserImage = u.UserImage, Password = u.Password, TypeOfUser = u.TypeOfUser.ToString() };
         }
 
         public UserEditDto Edit(UserEditDto dto)
         {
-            User user = new User { Username = dto.Username, Address = dto.Address, DateOfBirth = dto.DateOfBirth, Email = dto.Email, NameLastname = dto.NameLastname, UserImage = dto.UserImage, Password = BCrypt.Net.BCrypt.HashPassword(dto.Password) };
-            if (dto.TypeOfUser == "ADMINISTRATOR")
-                user.TypeOfUser = Enums.UserType.ADMINISTRATOR;
-            if (dto.TypeOfUser == "KUPAC")
-                user.TypeOfUser = Enums.UserType.KUPAC;
-            if (dto.TypeOfUser == "PRODAVAC")
-                user.TypeOfUser = Enums.UserType.PRODAVAC;
-            user = _userRepository.FindById(user.Id);
+            
+           User user = _userRepository.FindById(dto.Id);
+            user.Username = dto.Username;
+            user.NameLastname = dto.NameLastname;
+            user.Address = dto.Address;
+            user.Email = dto.Email;
+            user.DateOfBirth = dto.DateOfBirth;
+            user.UserImage = dto.UserImage;
+            if (dto.Password != "")
+            {
+                user.Password = dto.Password;
+            }
            User u= _userRepository.Edit(user);
             if (u == null)
                 return null;
@@ -107,7 +119,7 @@ namespace Server.Services
                         signingCredentials: signinCredentials //kredencijali za potpis
                     );
                     string tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
-                    LoginResponseDto loginResponseDto = new LoginResponseDto { Token = tokenString, UserEdit = new UserEditDto { Username = user.Username, Address = user.Address, DateOfBirth = user.DateOfBirth, Email = user.Email, NameLastname = user.NameLastname, UserImage = user.UserImage, Password = user.Password, TypeOfUser = user.TypeOfUser.ToString(), Id = user.Id }, LogedIn = true };
+                    LoginResponseDto loginResponseDto = new LoginResponseDto { Token = tokenString, User = new UserEditDto { Username = user.Username, Address = user.Address, DateOfBirth = user.DateOfBirth, Email = user.Email, NameLastname = user.NameLastname, UserImage = user.UserImage, Password = user.Password, TypeOfUser = user.TypeOfUser.ToString(), Id = user.Id }, LogedIn = true };
                     return loginResponseDto;
                 }
                 else

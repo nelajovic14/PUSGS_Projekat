@@ -9,5 +9,6 @@
         public string Description { get; set; }
         public string Image { get; set; }
         public long UserId { get;set; }
+        public UserDto User { get;set; }
     }
 }

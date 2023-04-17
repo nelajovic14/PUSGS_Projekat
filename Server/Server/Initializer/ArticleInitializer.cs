@@ -8,10 +8,12 @@ namespace Server.Initializer
     public class ArticleInitializer : IInitializer
     {
         private IArticleRepository _articleRepository;
+        private IUserRepository _userRepository;
 
-        public ArticleInitializer(IArticleRepository articleRepository)
+        public ArticleInitializer(IArticleRepository articleRepository, IUserRepository userRepository)
         {
             _articleRepository = articleRepository;
+            _userRepository = userRepository;
         }
 
         public void Initialize()
@@ -20,9 +22,16 @@ namespace Server.Initializer
 
             if (articles.Count > 0)
             {
-                foreach (var a in articles)
+                
+                return;
+            }
+            foreach(var u in _userRepository.GetAll())
+            {
+                if (u.TypeOfUser == Enums.UserType.PRODAVAC)
                 {
-                    _articleRepository.DeleteArticle(a.Id);
+                    _articleRepository.AddNew(new Article { Description = "cokoladica", Name = "bla bla", Price = 50, Qunatity = 5, Image = "slika", UserId = u.Id });
+                    _articleRepository.AddNew(new Article { Description = "cips", Name = "Domacinski", Price = 150, Qunatity = 3, Image = "slika", UserId = u.Id });
+                    break;
                 }
             }
             

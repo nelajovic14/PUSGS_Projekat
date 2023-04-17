@@ -1,17 +1,46 @@
-import { RegisterUser } from "../services/UserService";
-import React,{useState,useRef} from "react";
+import React,{useState,useEffect} from "react";
+import {GetUser,EditUserPut} from '../services/UserService'
 
-export default function Register(){
+export default function EditUser(props){
+    const [id,setId]=useState(-1);
     const [username,setUsername]=useState('');
     const [password,setPassword]=useState('');
     const [Name,setName]=useState('');
     const [lastname,setLastname]=useState('');
     const [email,setEmail]=useState('');
     const [address,setAddress]=useState('');
-    const [dateOfBirth,setDateOfBirth]=useState('');
+    const [dateOfBirth,setDateOfBirth]=useState(new Date());
     const [alertMessage,setAlert]=useState(<div></div>);
+    const config = {
+        headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'),}
+    };
+
+    useEffect (async ()=>{
+        
+        const response=await GetUser(props.user.id,config);
+        const user=response.data;
+        console.log(user);
+        setUsername(user.username);
+        
+        setAddress(user.address);
+        setEmail(user.email);
+        setId(user.id);
+        console.log(user.dateOfBirth);
+        console.log();
+        var date=(user.dateOfBirth+"").split('T')[0];
+        setDateOfBirth(date);
+        const names=user.nameLastname+"";
+        const words=names.split('/');
+        
+        setName(words[0]);
+        setLastname(words[1]);
+       
+    },[]);
+
+
+
     const handleInputChanges = e=>{
-        const{name,value}=e.target
+        var{name,value}=e.target
         if(name=="username"){
             setUsername(value);
         }
@@ -31,29 +60,13 @@ export default function Register(){
         if(name=="address"){
             setAddress(value);
         }
-        if(name=="uloga"){
-            setAddress(value);
-        }
-    }
-    const uloga=useRef();
-    const dateInputRef = useRef(null);
-    const register=async e=>{
-        
-        e.preventDefault();
-        if(validate()){
 
-            
-            console.log(dateInputRef.current.value)
-            console.log(username+"/"+password+"/"+Name+"/"+email+"/"+address+"/"+dateInputRef.current.value+"/"+uloga.current.value)
-            const values={Username:username,Password:password,NameLastname:Name+"/"+lastname,Email:email,Address:address,TypeOfUser:uloga.current.value,DateOfBirth:dateInputRef.current.value};
-            const resp= await RegisterUser(values);
-            console.log(resp);
-
+        if(name=="dateOfBirth"){
+            setDateOfBirth(value);
         }
     }
 
-        let usernameError = "";
-        let passwordError = "";
+    let usernameError = "";
         let nameError="";
         let lastnameError="";
         let addressError="";
@@ -67,10 +80,7 @@ export default function Register(){
                 alert(usernameError)
             }
             
-            if (!password) {
-                passwordError = "Password field is required";
-                alert(passwordError)
-            }
+           
 
             if (!Name) {
                 nameError = "Name field is required";
@@ -92,17 +102,30 @@ export default function Register(){
                 alert(addressError)
             }
 
-            if (nameError || passwordError || usernameError || lastnameError || birtdayError || emailError || addressError) {
+            if (nameError || usernameError || lastnameError || birtdayError || emailError || addressError) {
                 return false;
             }
             return true;
         }
 
+        const editovanje=async e=>{
+            e.preventDefault();
+            if(validate()){
+                const EditUserDto={Id:id,Username:username,Password:password,NameLastname:Name+"/"+lastname,Email:email,Address:address,DateOfBirth:dateOfBirth} 
+                const resp2=await EditUserPut(EditUserDto,config);
+                if(resp2==null){
+                    setAlert("Cant change! ERROR!")
+                }
+                else{
+                    setAlert("YOU MAKE SOME CHANGES CORECTLY! :)")
+                }
+            }
+        }
 
     return(
         <div class="jumbotron text-center">
-            <h3 class="bg-info">Register new user:</h3><br/><br/>
-        <form onSubmit={register}> 
+            <h3>Change information about you : </h3><br/>
+        <form onSubmit={editovanje}>                                  
             Username : <input type={"text"} name='username' value={username} onChange={handleInputChanges}  ></input><br/><br/>
             
             Password: <input type={"password"} name='password' value={password} onChange={handleInputChanges}></input><br/><br/>
@@ -113,20 +136,12 @@ export default function Register(){
 
             Email : <input type={"text"} name='email' value={email} onChange={handleInputChanges}  ></input><br/><br/>
 
-            Date of Birth : <input type={"date"} name="date" ref={dateInputRef}></input><br/><br/>
+            Date of Birth : <input type={"date"} name="dateOfBirth"  data-date-format="MM/DD/YYYY" value={dateOfBirth} onChange={handleInputChanges}></input><br/><br/>
 
             Address : <input type={"text"} name="address" value={address} onChange={handleInputChanges} ></input><br/><br/>
+        <input type={"submit"} name='promeni' value={"Change"} ></input><br/>
 
-            Role : <select ref={uloga} >
-                <option value={'KUPAC'}>KUPAC</option>
-                <option value={'PRODAVAC'}>PRODAVAC</option>
-            </select><br/><br/>
-
-            <input type={"submit"} name='registruj' value={"Register"} onChange={handleInputChanges}></input><br/>
-        </form>
-        <br/>
-        {alertMessage}
-        </div>
+    </form><br/>{alertMessage}
+    </div>
     )
-       
 }

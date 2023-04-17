@@ -92,3 +92,6 @@ C:\Users\Korisnik\Desktop\WEB PROJEKAT\PUSGS_Projekat\Server\Server\obj\Debug\ne
 C:\Users\Korisnik\Desktop\WEB PROJEKAT\PUSGS_Projekat\Server\Server\obj\Debug\net5.0\Server.pdb
 C:\Users\Korisnik\Desktop\WEB PROJEKAT\PUSGS_Projekat\Server\Server\obj\Debug\net5.0\Server.genruntimeconfig.cache
 C:\Users\Korisnik\Desktop\WEB PROJEKAT\PUSGS_Projekat\Server\Server\obj\Debug\net5.0\ref\Server.dll
+C:\Users\Korisnik\Desktop\WEB PROJEKAT\PUSGS_Projekat\Server\Server\bin\Debug\net5.0\Microsoft.AspNetCore.JsonPatch.dll
+C:\Users\Korisnik\Desktop\WEB PROJEKAT\PUSGS_Projekat\Server\Server\bin\Debug\net5.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+C:\Users\Korisnik\Desktop\WEB PROJEKAT\PUSGS_Projekat\Server\Server\bin\Debug\net5.0\Newtonsoft.Json.Bson.dll

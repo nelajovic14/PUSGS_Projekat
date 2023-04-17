@@ -2,6 +2,8 @@ import React,{useState} from "react";
 import { LogIn } from "../services/UserService";
 import * as ReactDOMClient from 'react-dom/client';
 import Register from "./RegisterUser";
+import NewOrder from "./NewOrder";
+import MainPage from "./MainPage";
 
 export default function Login(){
 
@@ -26,7 +28,15 @@ export default function Login(){
                 const values={Username:username,Password:password};
                 const resp=await LogIn(values);
                 console.log(resp);
-               
+                if(resp.data.logedIn==true){
+                    localStorage.setItem('token',resp.data.token)
+                    const container = document.getElementById('root');
+                    const root = ReactDOMClient.createRoot(container);
+                    root.render(<MainPage user={resp.data.user}></MainPage>);
+                }
+                else{
+                    setAlert("Wrong username or password!");
+                }
             }
         }
         let nameError = "";
@@ -59,9 +69,9 @@ export default function Login(){
             <h2 class="bg-info">Please, log in :)</h2><br/><br/>
             <p >
         <form onSubmit={login} > 
-           <label> Username : </label>&nbsp;<input type={"text"} name='username'  value={username} onChange={handleInputChanges}  ></input><br/><br/>
+            Username : &nbsp;<input type={"text"} name='username'  value={username} onChange={handleInputChanges}  ></input><br/><br/>
             
-           <label> Password : </label>&nbsp;<input type={"password"} name='password' value={password} onChange={handleInputChanges}></input><br/><br/>
+            Password : &nbsp;<input type={"password"} name='password' value={password} onChange={handleInputChanges}></input><br/><br/>
             
             <input type={"submit"} name='uloguj' value={"Log in"} onChange={handleInputChanges} class="btn btn-info"></input><br/>
         </form>

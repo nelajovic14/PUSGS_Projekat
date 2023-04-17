@@ -51,6 +51,7 @@ namespace Server.Controllers
         [Authorize(Roles ="user")]
         public IActionResult GetInformations(int id)
         {
+           // long id = Int64.Parse(ids);
             return Ok(_userService.GetUser(id));
         }
     }
