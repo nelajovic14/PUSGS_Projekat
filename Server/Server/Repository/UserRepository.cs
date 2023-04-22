@@ -34,6 +34,10 @@ namespace Server.Repository
         {
             return _orderDbContext.Users.SingleOrDefault<User>(u => String.Equals(u.Username, user.Username));
         }
+        public User FindEmail(User user)
+        {
+            return _orderDbContext.Users.SingleOrDefault<User>(u => String.Equals(u.Email, user.Email));
+        }
         public User FindById(long Id)
         {
             return _orderDbContext.Users.SingleOrDefault<User>(u => u.Id==Id);

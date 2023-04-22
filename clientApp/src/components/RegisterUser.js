@@ -1,5 +1,8 @@
 import { RegisterUser } from "../services/UserService";
 import React,{useState,useRef} from "react";
+import DialogTitle from "@mui/material/DialogTitle";
+import Dialog from "@mui/material/Dialog";
+import  backImage  from "../img/3893666_81805.jpg";
 
 export default function Register(){
     const [username,setUsername]=useState('');
@@ -9,7 +12,19 @@ export default function Register(){
     const [email,setEmail]=useState('');
     const [address,setAddress]=useState('');
     const [dateOfBirth,setDateOfBirth]=useState('');
-    const [alertMessage,setAlert]=useState(<div></div>);
+    const [data,setData]=useState('');
+    const [openDialog, handleDisplay] = React.useState(false);
+
+    const handleClose = () => {
+        handleDisplay(false);
+    };
+
+    const openDialogBox = () => {
+        handleDisplay(true);
+    };
+
+
+
     const handleInputChanges = e=>{
         const{name,value}=e.target
         if(name=="username"){
@@ -42,12 +57,23 @@ export default function Register(){
         e.preventDefault();
         if(validate()){
 
-            
-            console.log(dateInputRef.current.value)
-            console.log(username+"/"+password+"/"+Name+"/"+email+"/"+address+"/"+dateInputRef.current.value+"/"+uloga.current.value)
-            const values={Username:username,Password:password,NameLastname:Name+"/"+lastname,Email:email,Address:address,TypeOfUser:uloga.current.value,DateOfBirth:dateInputRef.current.value};
+           const values={Username:username,Password:password,NameLastname:Name+"/"+lastname,Email:email,Address:address,TypeOfUser:uloga.current.value,DateOfBirth:dateInputRef.current.value};
             const resp= await RegisterUser(values);
             console.log(resp);
+            if(resp.data!=''){
+                if(uloga.current.value=="PRODAVAC"){
+                    setData("You send a request for registration!")
+                    openDialogBox();
+                }
+                else{
+                    setData("You are registrated!")
+                    openDialogBox();
+                }
+            }
+            else{
+                setData("Person with this username or email already exists!")
+                openDialogBox();
+            }
 
         }
     }
@@ -64,32 +90,38 @@ export default function Register(){
             
             if (!username) {
                 usernameError = "Username field is required";
-                alert(usernameError)
+                setData(usernameError);
+                openDialogBox();
             }
             
-            if (!password) {
+            else if (!password) {
                 passwordError = "Password field is required";
-                alert(passwordError)
+                setData(passwordError);
+                openDialogBox();
             }
 
-            if (!Name) {
+            else if (!Name) {
                 nameError = "Name field is required";
-                alert(nameError)
+                setData(nameError);
+                openDialogBox();
             }
 
-            if (!lastname) {
+            else if (!lastname) {
                 lastnameError = "Lastname field is required";
-                alert(lastnameError)
+                setData(lastnameError);
+                openDialogBox();
             }
 
-            if (!email) {
+            else if (!email) {
                 emailError = "Email field is required";
-                alert(emailError)
+                setData(emailError);
+                openDialogBox();
             }
 
-            if (!address) {
+            else if (!address) {
                 addressError = "Address field is required";
-                alert(addressError)
+                setData(addressError);
+                openDialogBox();
             }
 
             if (nameError || passwordError || usernameError || lastnameError || birtdayError || emailError || addressError) {
@@ -125,7 +157,18 @@ export default function Register(){
             <input type={"submit"} name='registruj' value={"Register"} onChange={handleInputChanges}></input><br/>
         </form>
         <br/>
-        {alertMessage}
+        <Dialog onClose = {handleClose} open = {openDialog}>
+            <DialogTitle> Registration </DialogTitle>
+            <div class="p-5 text-center bg-image rounded-3" style={{ backgroundImage: `url(${backImage})`}}>
+            <div class="mask">
+                <div class="d-flex justify-content-center align-items-center h-100">
+                <div class="text-black">
+                    <h4 class="mb-3">{data}</h4>
+                </div>
+                </div>
+            </div>
+            </div>
+         </Dialog>
         </div>
     )
        

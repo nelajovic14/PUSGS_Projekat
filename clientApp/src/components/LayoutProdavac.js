@@ -1,6 +1,6 @@
 import { Outlet, Link } from "react-router-dom";
 
-const Layout = () => {
+const LayoutProdavac = () => {
   return (
     
     <>
@@ -20,11 +20,17 @@ const Layout = () => {
           <li>
             <Link to="/EditInformation">Edit</Link>
           </li>
-          <li >
-            <Link to="/NewOrder">New Order</Link>
+          <li>
+            <Link to="/MyArticles">My Articles</Link>
           </li>
           <li>
-            <Link to="/OldOrders">Old Orders</Link>
+            <Link to="/NewOrdersUser">New Orders</Link>
+          </li>
+          <li>
+            <Link to="/OldOrdersUser">Old Orders</Link>
+          </li>
+          <li>
+            <Link to="/AddNew">New Article</Link>
           </li>
         </ul></div>
       </nav>
@@ -35,4 +41,4 @@ const Layout = () => {
   )
 };
 
-export default Layout;
+export default LayoutProdavac;

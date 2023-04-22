@@ -11,5 +11,6 @@ namespace Server.Services.Interfaces
         ArticleDto Edit(ArticleDto article);
         bool Delete(long Id);
         List<ArticleDto> GetAll(); 
+        List<ArticleDto> GetAllForUser(int id); 
     }
 }

@@ -34,17 +34,23 @@ namespace Server.Controllers
         {
             return Ok(_articleService.Edit(article));
         }
-        [HttpDelete]
+        [HttpDelete("{id}")]
         [Authorize(Roles = "prodavac")]
-        public IActionResult Delete([FromBody] ArticleDto article)
+        public IActionResult Delete(int id)
         {
-            return Ok(_articleService.Delete(article.Id));
+            return Ok(_articleService.Delete(id));
         }
         [HttpGet]
         [Authorize(Roles ="user")]
         public IActionResult GetAll()
         {
             return Ok(_articleService.GetAll());
+        }
+        [HttpGet("getAllFromUser/{id}")]
+        [Authorize(Roles = "prodavac")]
+        public IActionResult GetAllForUser(int id)
+        {
+            return Ok(_articleService.GetAllForUser(id));
         }
     }
 }

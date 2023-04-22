@@ -29,6 +29,14 @@ namespace Server.Services
 
         public UserDto AddUser(UserDto dto)
         {
+            if(_userRepository.Find(new User { Username = dto.Username })!=null)
+            {
+                return null;
+            }
+            if (_userRepository.FindEmail(new User { Email = dto.Email }) != null)
+            {
+                return null;
+            }
             User user = new User {Username=dto.Username, Address = dto.Address, DateOfBirth = dto.DateOfBirth, Email = dto.Email, NameLastname = dto.NameLastname, UserImage = dto.UserImage, Password = BCrypt.Net.BCrypt.HashPassword(dto.Password) };
             if (dto.TypeOfUser == "ADMINISTRATOR")
             {
@@ -53,6 +61,8 @@ namespace Server.Services
         {
             
            User user = _userRepository.FindById(dto.Id);
+            if (user == null)
+                return null;
             user.Username = dto.Username;
             user.NameLastname = dto.NameLastname;
             user.Address = dto.Address;

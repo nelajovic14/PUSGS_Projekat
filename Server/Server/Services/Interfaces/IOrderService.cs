@@ -10,6 +10,8 @@ namespace Server.Services.Interfaces
         OrderBackDto AddNew(OrderDto orderDto);
         List<OrderDto> GetAllForUSer(long id,bool old);
         List<OrderDto> GetAll();
-        OrderDto Decline(int id);
+        List<OrderDto> GetForSpecialUser(int id);
+        List<OrderDto> GetForSpecialUserNew(int id);
+        bool Decline(long id);
     }
 }

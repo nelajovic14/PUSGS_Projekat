@@ -1,5 +1,8 @@
 import React,{useState,useEffect} from "react";
 import {GetUser,EditUserPut} from '../services/UserService'
+import DialogTitle from "@mui/material/DialogTitle";
+import Dialog from "@mui/material/Dialog";
+import  backImage  from "../img/3893666_81805.jpg";
 
 export default function EditUser(props){
     const [id,setId]=useState(-1);
@@ -10,13 +13,22 @@ export default function EditUser(props){
     const [email,setEmail]=useState('');
     const [address,setAddress]=useState('');
     const [dateOfBirth,setDateOfBirth]=useState(new Date());
-    const [alertMessage,setAlert]=useState(<div></div>);
+    const [data,setData]=useState('');
+    const [openDialog, handleDisplay] = React.useState(false);
+
+    const handleClose = () => {
+        handleDisplay(false);
+    };
+
+    const openDialogBox = () => {
+        handleDisplay(true);
+    };
+
     const config = {
         headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'),}
     };
 
-    useEffect (async ()=>{
-        
+    const fillFields=async (e)=>{
         const response=await GetUser(props.user.id,config);
         const user=response.data;
         console.log(user);
@@ -34,6 +46,11 @@ export default function EditUser(props){
         
         setName(words[0]);
         setLastname(words[1]);
+    }
+
+    useEffect (()=>{
+        
+        fillFields();
        
     },[]);
 
@@ -77,29 +94,31 @@ export default function EditUser(props){
             
             if (!username) {
                 usernameError = "Username field is required";
-                alert(usernameError)
+                setData(usernameError);
+                openDialogBox();
             }
-            
-           
-
-            if (!Name) {
+            else if (!Name) {
                 nameError = "Name field is required";
-                alert(nameError)
+                setData(nameError);
+                openDialogBox();
             }
 
-            if (!lastname) {
+            else if (!lastname) {
                 lastnameError = "Lastname field is required";
-                alert(lastnameError)
+                setData(lastnameError);
+                openDialogBox();
             }
 
-            if (!email) {
+            else if (!email) {
                 emailError = "Email field is required";
-                alert(emailError)
+                setData(emailError);
+                openDialogBox();
             }
 
-            if (!address) {
+            else if (!address) {
                 addressError = "Address field is required";
-                alert(addressError)
+                setData(addressError);
+                openDialogBox();
             }
 
             if (nameError || usernameError || lastnameError || birtdayError || emailError || addressError) {
@@ -113,11 +132,13 @@ export default function EditUser(props){
             if(validate()){
                 const EditUserDto={Id:id,Username:username,Password:password,NameLastname:Name+"/"+lastname,Email:email,Address:address,DateOfBirth:dateOfBirth} 
                 const resp2=await EditUserPut(EditUserDto,config);
-                if(resp2==null){
-                    setAlert("Cant change! ERROR!")
+                if(resp2==''){
+                    setData("Can not change data!")
+                    openDialogBox();
                 }
                 else{
-                    setAlert("YOU MAKE SOME CHANGES CORECTLY! :)")
+                    setData("You changed your data!")
+                    openDialogBox();
                 }
             }
         }
@@ -141,7 +162,19 @@ export default function EditUser(props){
             Address : <input type={"text"} name="address" value={address} onChange={handleInputChanges} ></input><br/><br/>
         <input type={"submit"} name='promeni' value={"Change"} ></input><br/>
 
-    </form><br/>{alertMessage}
+    </form><br/>
+    <Dialog onClose = {handleClose} open = {openDialog}>
+    <DialogTitle> Edit information </DialogTitle>
+            <div class="p-5 text-center bg-image rounded-3" style={{ backgroundImage: `url(${backImage})`}}>
+            <div class="mask">
+                <div class="d-flex justify-content-center align-items-center h-100">
+                <div class="text-black">
+                    <h4 class="mb-3">{data}</h4>
+                </div>
+                </div>
+            </div>
+            </div>
+         </Dialog>
     </div>
     )
 }

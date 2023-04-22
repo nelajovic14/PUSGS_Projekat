@@ -62,5 +62,17 @@ namespace Server.Services
             }
             return articleDtos;
         }
+        public List<ArticleDto> GetAllForUser(int id)
+        {
+            List<ArticleDto> articleDtos = new List<ArticleDto>();
+            foreach (Article a in _articleRepository.GetAll())
+            {
+                if (a.UserId == id)
+                {
+                    articleDtos.Add(_mapper.Map<ArticleDto>(a));
+                }
+            }
+            return articleDtos;
+        }
     }
 }

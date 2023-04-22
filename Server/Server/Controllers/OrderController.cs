@@ -54,10 +54,22 @@ namespace Server.Controllers
         }
         [HttpPut("decline")]
         [Authorize(Roles ="kupac")]
-        public IActionResult Decline(int id)
+        public IActionResult Decline([FromBody] OrderDto order)
         {
-                return Ok(_orderService.Decline(id));
+                return Ok(_orderService.Decline(order.Id));
             
+        }
+        [HttpGet("getForUser/{id}")]
+        [Authorize(Roles = "prodavac")]
+        public IActionResult GetAllForUser(int id)
+        {
+            return Ok(_orderService.GetForSpecialUser(id));
+        }
+        [HttpGet("getForUserNew/{id}")]
+        [Authorize(Roles = "prodavac")]
+        public IActionResult GetAllForUserNew(int id)
+        {
+            return Ok(_orderService.GetForSpecialUserNew(id));
         }
     }
 }

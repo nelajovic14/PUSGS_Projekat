@@ -1,5 +1,7 @@
 import React,{useState,useEffect} from "react";
 import { GetAllArticles } from "../services/ArticleService";
+import OrderArticle from "../components/OrderArticle"
+import * as ReactDOMClient from 'react-dom/client';
 
 export default function NewOrder(props){
     //console.log("props:"+props.user.typeOfUser);
@@ -7,17 +9,25 @@ export default function NewOrder(props){
     const config = {
         headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'),}
     };
-        
-    useEffect( async () =>{
+
+    const tableArticles=async (e)=>{
         const resp=await GetAllArticles(config);
         console.log(resp);
         setElements(resp.data)
         console.log(elements);
+
+    }
+        
+    useEffect(() =>{
+        tableArticles();
     },[])
 
     const poruci=(event,element)=>{
        
         event.preventDefault();
+        const container = document.getElementById('root');
+        const root = ReactDOMClient.createRoot(container);
+        root.render(<OrderArticle user={props.user} article={element}></OrderArticle>);
 
     }
 
