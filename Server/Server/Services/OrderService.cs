@@ -22,36 +22,85 @@ namespace Server.Services
             _articleRepository = articleRepository;
         }
 
-        public OrderBackDto AddNew(OrderDto orderDto)
+        public OrderBackDto AddNew(OrderDtoList orderDto)
         {
             OrderBackDto orderBack = new OrderBackDto();
-            
-
-            Article article = _articleRepository.GetArticle(orderDto.ArticleId);
-            if (article != null)
+            List<Order> orders = new List<Order>();
+            List<Article> articles = new List<Article>();
+            orderBack.FinalyPrice = 0;
+            foreach(Article a in orderDto.Articles)
             {
-                if (article.Qunatity >= orderDto.Quantity)
+                Article article = _articleRepository.GetArticle(a.Id);
+                
+                if (a != null)
                 {
-                    orderBack.FinalyPrice = orderDto.Price * orderDto.Quantity + 300;
-                    orderBack.DeliveryTime = DateTime.Now.AddDays(1);
-                    Order order = new Order { Address = orderDto.Address, Quantity = orderDto.Quantity, Price = orderDto.Price, Comment = orderDto.Comment, DeliveryTime = orderBack.DeliveryTime, FinalPrice = orderBack.FinalyPrice, IsDeliverd = true, OrderTime = DateTime.Now, UserId = orderDto.UserId, ArticleId=orderDto.ArticleId };
-                    
-                    order = _orderRepository.AddNew(order);
-                    orderBack.Id = order.Id;
-                    orderBack.IsDeliverd = true;
-                    article.Qunatity -= orderDto.Quantity;
-                    _articleRepository.Edit(article);
-                    return orderBack;
+                    if (article.Qunatity >= a.Qunatity)
+                    {
+                        article.Qunatity-=a.Qunatity;
+                        orderBack.FinalyPrice += a.Qunatity * a.Price;
+                        Order order = new Order { Address = orderDto.Address, Quantity = a.Qunatity,Price=a.Price, Comment = orderDto.Comment, IsDeliverd = true, UserId = orderDto.UserId, ArticleId = a.Id };
+                        orders.Add(order);
+
+                        articles.Add(article);
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
                 else
                 {
                     return null;
                 }
+                //orderBack.DeliveryTime = DateTime.Now.AddDays(1);
+                
+                //order = _orderRepository.AddNew(order);
+               // orderBack.Id = order.Id;
+               // orderBack.IsDeliverd = true;
+                //article.Qunatity -= orderDto.Quantity;
+                //_articleRepository.Edit(article);
+                //return orderBack;
             }
-            else
+            orderBack.FinalyPrice += 300;
+            orderBack.DeliveryTime = DateTime.Now.AddDays(1);
+            
+            foreach(Order o in orders)
             {
-                return null;
+                o.FinalPrice = orderBack.FinalyPrice;
+                o.DeliveryTime = orderBack.DeliveryTime;
+                o.OrderTime = DateTime.Now;
+                var or = _orderRepository.AddNew(o);
             }
+            foreach(Article article1 in articles)
+            {
+                _articleRepository.Edit(article1);
+            }
+            return orderBack;
+            //Article article = _articleRepository.GetArticle(orderDto.ArticleId);
+            //if (article != null)
+            //{
+            //    if (article.Qunatity >= orderDto.Quantity)
+            //    {
+            //        orderBack.FinalyPrice = orderDto.Price * orderDto.Quantity + 300;
+            //        orderBack.DeliveryTime = DateTime.Now.AddDays(1);
+            //        Order order = new Order { Address = orderDto.Address, Quantity = orderDto.Quantity, Price = orderDto.Price, Comment = orderDto.Comment, DeliveryTime = orderBack.DeliveryTime, FinalPrice = orderBack.FinalyPrice, IsDeliverd = true, OrderTime = DateTime.Now, UserId = orderDto.UserId, ArticleId=orderDto.ArticleId };
+
+            //        order = _orderRepository.AddNew(order);
+            //        orderBack.Id = order.Id;
+            //        orderBack.IsDeliverd = true;
+            //        article.Qunatity -= orderDto.Quantity;
+            //        _articleRepository.Edit(article);
+            //        return orderBack;
+            //    }
+            //    else
+            //    {
+            //        return null;
+            //    }
+            //}
+            //else
+            //{
+            //    return null;
+            //}
         }
 
         public List<OrderDto> GetAllForUSer(long id,bool old)
@@ -181,7 +230,7 @@ namespace Server.Services
             List<Order> orders = _orderRepository.GetAll();
             foreach (var o in orders)
             {
-                if (o.DeliveryTime < DateTime.Now)
+                if (o.DeliveryTime < DateTime.Now && o.IsDeliverd==true)
                 {
                     OrderDto orderDto = _mapper.Map<OrderDto>(o);
                     if (orderDto.Article == null)
@@ -220,7 +269,7 @@ namespace Server.Services
             List<Order> orders = _orderRepository.GetAll();
             foreach (var o in orders)
             {
-                if (o.DeliveryTime > DateTime.Now)
+                if (o.DeliveryTime > DateTime.Now && o.IsDeliverd == true)
                 {
                     OrderDto orderDto = _mapper.Map<OrderDto>(o);
                     if (orderDto.Article == null)

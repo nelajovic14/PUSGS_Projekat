@@ -53,7 +53,7 @@ export default function OldOrder(props){
     const elementi=elements.map(element => <tr><td>
         {element.article.name}</td><td >{element.quantity}</td><td >
         {element.price}</td><td>{element.finalPrice}</td>
-        <td>{element.orderTime}</td><td>{element.deliveryTime}</td>
+        <td>{element.orderTime.split('T')[0]+" at "+element.orderTime.split('T')[1]}</td><td>{element.deliveryTime.split('T')[0]+" at "+element.deliveryTime.split('T')[1]}</td>
         <td>{element.comment}</td><td>{element.address}</td>
         <td><input type={"button"} class="btn btn-link" onClick={(event)=>otkazi(event,element)}  value={"Decline"}></input></td>
         </tr>);

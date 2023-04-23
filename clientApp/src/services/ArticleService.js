@@ -15,3 +15,7 @@ export const DeleteArticle=async (id,config)=>{
 export const AddArticle=async (Article,config)=>{
     return await axios.post(`https://localhost:44316/api/article/add`,Article,config)
 }
+
+export const EditArticle=async (Article,config)=>{
+    return await axios.put(`https://localhost:44316/api/article`,Article,config)
+}

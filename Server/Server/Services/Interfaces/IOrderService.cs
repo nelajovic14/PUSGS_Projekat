@@ -7,7 +7,7 @@ namespace Server.Services.Interfaces
 {
     public interface IOrderService
     {
-        OrderBackDto AddNew(OrderDto orderDto);
+        OrderBackDto AddNew(OrderDtoList orderDto);
         List<OrderDto> GetAllForUSer(long id,bool old);
         List<OrderDto> GetAll();
         List<OrderDto> GetForSpecialUser(int id);

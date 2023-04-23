@@ -1,26 +1,17 @@
-import { GetUserOrders,GetNewUserOrders } from "../services/OrderService";
+import { GetAllOrders } from "../services/OrderService";
 import React,{useState,useEffect} from "react";
 
-export default function NewOrdersUser(props){
+export default function AllOrders(props){
     const [elements,setElements]=useState([]);
     const config = {
         headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'),}
     };
 
     const OrdersTableFill=async (e)=>{
-        if(props.IsOld==true){
-
-            const resp=await GetUserOrders(props.user.id,config);
+          const resp=await GetAllOrders(config);
             console.log("resp:"+resp);
             setElements(resp.data)
-            console.log("staro");
-        }
-        else if(props.IsOld==false){
-            const resp=await GetNewUserOrders(props.user.id,config);
-            console.log("resp:"+resp);
-            setElements(resp.data)
-            console.log("novo");
-        }
+            console.log("staro");        
         
     }
 

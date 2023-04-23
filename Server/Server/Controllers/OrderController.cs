@@ -18,9 +18,13 @@ namespace Server.Controllers
 
         [HttpPost("add")]
         [Authorize(Roles ="user")]
-        public IActionResult Add([FromBody]OrderDto orderDto)
+        public IActionResult Add([FromBody]OrderDtoList orderDto)
         {
             if(orderDto == null)
+            {
+                return Ok(new OrderBackDto { Id = -1 });
+            }
+            if(orderDto.Address=="" || orderDto.Comment == "" || orderDto.Articles.Count==0)
             {
                 return Ok(new OrderBackDto { Id = -1 });
             }

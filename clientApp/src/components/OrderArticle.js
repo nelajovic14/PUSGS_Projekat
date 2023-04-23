@@ -5,6 +5,7 @@ import Dialog from "@mui/material/Dialog";
 import  backImage  from "../img/3893666_81805.jpg";
 import MainPage from "../components/MainPage"
 import * as ReactDOMClient from 'react-dom/client';
+import NewOrder from "./NewOrders";
 
 export default function OrderArticle(props){
     const [article,setArticle]=useState(props.article);
@@ -13,6 +14,7 @@ export default function OrderArticle(props){
     const [comment,setComment]=useState('');
     const [data,setData]=useState('');
     const [openDialog, handleDisplay] = React.useState(false);
+    const [orderArt,setOrder]=useState(props.articles);
 
     const handleClose = () => {
         handleDisplay(false);
@@ -48,6 +50,10 @@ export default function OrderArticle(props){
                 
                 setData("Final price : "+resp.data.finalyPrice+"\nDelivery date and time : "+resp.data.deliveryTime.split('T')[0]+" at "+resp.data.deliveryTime.split('T')[1].split('.')[0]);
                 openDialogBox();
+                //setOrder(Order);
+                const container = document.getElementById('root');
+                const root = ReactDOMClient.createRoot(container);
+                root.render(<NewOrder user={props.user} order={Order}></NewOrder>)
             }
             else{
                 setData("I am sorry, you can not order this!");
@@ -83,6 +89,9 @@ export default function OrderArticle(props){
             root.render(<MainPage user={props.user}></MainPage>)
     }
 
+
+
+    
     return(
         <div class="container text-center">
             <div class="alert alert-warning"><strong><h1>Order this article:</h1></strong></div>

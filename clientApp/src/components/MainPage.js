@@ -1,6 +1,6 @@
 import LayoutKupac from "./LayoutKupac";
 import LayoutProdavac from "./LayoutProdavac";
-import NewOrder from "./NewOrder";
+import NewOrder from "./NewOrders";
 import EditUser from "./EditUser";
 import OldOrder from "./OldOrder";
 import MyArticles from "./MyArticles"
@@ -8,6 +8,8 @@ import OrdersOfUser from "./OrdersOfUser"
 import * as ReactDOMClient from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NewArticleFunction from "./NewArticle";
+import LayoutAdmin from "./LayoutAdmin";
+import AllOrders from "./AllOrders";
 
 export default function MainPage(props){
     
@@ -20,7 +22,7 @@ export default function MainPage(props){
           <Routes>
               <Route path="/" element={<LayoutKupac />}>      
               <Route path='/EditInformation'  element={<EditUser user={props.user} />} />
-              <Route path='/NewOrder'  element={<NewOrder user={props.user} />}  />
+              <Route path='/NewOrder'  element={<NewOrder user={props.user} order={null}/>}  />
               <Route path='/OldOrders'   element ={<OldOrder user={props.user}  />} />
               </Route>
           </Routes>
@@ -46,8 +48,9 @@ export default function MainPage(props){
     return(
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LayoutProdavac />}>      
+        <Route path="/" element={<LayoutAdmin />}>      
         <Route path='/EditInformation'  element={<EditUser user={props.user} />} />
+        <Route path="/AllOrders" element={<AllOrders user={props.user}></AllOrders>}></Route>
         </Route>
       </Routes>
     </BrowserRouter>

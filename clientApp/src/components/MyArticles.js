@@ -1,8 +1,10 @@
 import React,{useState} from "react";
-import { DeleteArticle, GetAllUserArticles } from "../services/ArticleService";
+import { DeleteArticle, EditArticle, GetAllUserArticles } from "../services/ArticleService";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import  backImage  from "../img/3893666_81805.jpg";
+import * as ReactDOMClient from 'react-dom/client';
+import EditArticleFunction from "./EditArticle";
 
 export default function NewOrder(props){
     //console.log("props:"+props.user.typeOfUser);
@@ -45,11 +47,20 @@ export default function NewOrder(props){
         openDialogBox();
     }
 
+    const edit=async (event,element)=>{
+       
+        event.preventDefault();
+        const container = document.getElementById('root');
+        const root = ReactDOMClient.createRoot(container);
+        root.render(<EditArticleFunction user={props.user} article={element}></EditArticleFunction>);
+    }
+
     const elementi=elements.map(element => <tr><td>
         {element.name}</td><td >{element.price}</td><td >
         {element.qunatity}</td><td>{element.description}</td>
         <td>{element.image}</td>
         <td><input type={"button"} class="btn btn-link" onClick={(event)=>obrisi(event,element)}  value={"Delete"}></input></td>
+        <td><input type={"button"} class="btn btn-link" onClick={(event)=>edit(event,element)}  value={"Edit"}></input></td>
         </tr>);
     return(
             <div>

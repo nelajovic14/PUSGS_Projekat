@@ -19,3 +19,7 @@ export const GetNewUserOrders = async(id,config)=>{
 export const AddOrder = async(Order,config)=>{
     return await axios.post(`https://localhost:44316/api/order/add`,Order,config);
 }
+
+export const GetAllOrders = async(config)=>{
+    return await axios.get(`https://localhost:44316/api/order/`,config);
+}
