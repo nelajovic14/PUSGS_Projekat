@@ -12,7 +12,9 @@ namespace Server.Services.Interfaces
         UserDto AddUser(UserDto newUser);
         LoginResponseDto LogIn(UserLoginDto dto);
         UserEditDto Edit(UserEditDto dto);
-        UserLoginDto Verificate(UserLoginDto userLoginDto);
+        UserLoginDto Verificate(UserEditDto userLoginDto);
         UserEditDto GetUser(long id);
+        List<UserEditDto> GetRequests();
+        void Remove(UserEditDto user);
     }
 }

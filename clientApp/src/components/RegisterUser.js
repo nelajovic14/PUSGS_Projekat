@@ -57,6 +57,8 @@ export default function Register(){
         e.preventDefault();
         if(validate()){
 
+
+             
            const values={Username:username,Password:password,NameLastname:Name+"/"+lastname,Email:email,Address:address,TypeOfUser:uloga.current.value,DateOfBirth:dateInputRef.current.value};
             const resp= await RegisterUser(values);
             console.log(resp);
@@ -123,6 +125,20 @@ export default function Register(){
                 setData(addressError);
                 openDialogBox();
             }
+
+            var today = new Date();
+            var unos=dateInputRef.current.value;
+
+            const date1 = new Date(today.getFullYear(), today.getMonth(),today.getDate()); 
+            const date2 = new Date(unos.split('-')[0], unos.split('-')[1], unos.split('-')[2]);
+            alert(unos)
+            alert(date2);
+            if(date1<=date2){
+                setData("Can not be born in the future! Please change date field");
+                openDialogBox();
+                return false;
+            }
+
 
             if (nameError || passwordError || usernameError || lastnameError || birtdayError || emailError || addressError) {
                 return false;

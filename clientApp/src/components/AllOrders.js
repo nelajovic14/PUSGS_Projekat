@@ -15,9 +15,9 @@ export default function AllOrders(props){
         
     }
 
-    //useEffect(() =>{
+    useEffect(() =>{
         OrdersTableFill();
-    //},[])
+    },[])
 
    
 

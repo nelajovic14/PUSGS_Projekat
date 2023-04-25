@@ -38,6 +38,9 @@ export default function NewArticleFunction(props){
         if(name=="opis"){
             setOpis(value);
         }
+        if(name=="slika"){
+            setSlika(value);
+        }
     }
     const validate=()=>{
         var valid=true;

@@ -30,7 +30,7 @@ namespace Server.Controllers
         }
         [HttpPut]
         [Authorize(Roles ="prodavac")]
-        public IActionResult Put([FromBody] ArticleDto article)
+        public IActionResult Put([FromBody] ArticleEditDto article)
         {
             return Ok(_articleService.Edit(article));
         }

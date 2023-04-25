@@ -21,10 +21,12 @@ namespace Server.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IConfigurationSection _secretKey;
-        public UserService(IUserRepository userRepository,IConfiguration config)
+        private readonly IMailService _mailservice;
+        public UserService(IUserRepository userRepository,IConfiguration config, IMailService mailservice)
         {
             _userRepository = userRepository;
             _secretKey = config.GetSection("SecretKey");
+            _mailservice = mailservice;
         }
 
         public UserDto AddUser(UserDto dto)
@@ -82,7 +84,19 @@ namespace Server.Services
             }
         }
 
-        
+        public List<UserEditDto> GetRequests()
+        {
+            List<UserEditDto> userDtos = new List<UserEditDto>();
+            foreach(User u in _userRepository.GetAll())
+            {
+                if (u.Verificated == false && u.TypeOfUser==Enums.UserType.PRODAVAC)
+                {
+                    UserEditDto user= new UserEditDto { Username = u.Username, Address = u.Address, DateOfBirth = u.DateOfBirth, Email = u.Email, NameLastname = u.NameLastname, UserImage = u.UserImage, Password = u.Password, TypeOfUser = u.TypeOfUser.ToString(), Id = u.Id };
+                    userDtos.Add(user);
+                }
+            }
+            return userDtos;
+        }
 
         public UserEditDto GetUser(long id)
         {
@@ -143,7 +157,14 @@ namespace Server.Services
             }
         }
 
-        public UserLoginDto Verificate(UserLoginDto userLoginDto)
+        public void Remove(UserEditDto user)
+        {
+            _mailservice.SendMail(user.Email, "VERIFICATE", "You are rejected!");
+            User u = _userRepository.Find(new User { Username=user.Username});
+            _userRepository.Remove(u);
+        }
+
+        public UserLoginDto Verificate(UserEditDto userLoginDto)
         {
             User user = new User { Username = userLoginDto.Username, Password = userLoginDto.Password };
 
@@ -151,6 +172,8 @@ namespace Server.Services
             user = _userRepository.Find(user);
             if (user != null)
             {
+                _mailservice.SendMail(userLoginDto.Email, "VERIFICATE", "You are successufully verificated!");
+
                 user.Verificated = true;
                 User u = _userRepository.Verificate(user);
                 if (u == null)

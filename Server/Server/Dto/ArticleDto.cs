@@ -1,14 +1,21 @@
-﻿namespace Server.Dto
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Server.Dto
 {
     public class ArticleDto
     {
-        public long Id { get; set; }
+        //public long Id { get; set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
         public double Price { get; set; }
+        [Required]
         public int Qunatity { get; set; }
+        [Required]
         public string Description { get; set; }
         public string Image { get; set; }
+        [Required]
         public long UserId { get;set; }
-        public UserDto User { get;set; }
+        //public UserDto User { get;set; }
     }
 }

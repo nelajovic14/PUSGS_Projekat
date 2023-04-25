@@ -14,6 +14,7 @@ namespace Server.Mapping
         {
             CreateMap<User, UserDto>().ReverseMap();
             CreateMap<Article, ArticleDto>().ReverseMap();
+            CreateMap<Article, ArticleEditDto>().ReverseMap();
             CreateMap<Order, OrderDto>().ReverseMap();
         }
     }

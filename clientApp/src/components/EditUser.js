@@ -130,7 +130,7 @@ export default function EditUser(props){
         const editovanje=async e=>{
             e.preventDefault();
             if(validate()){
-                const EditUserDto={Id:id,Username:username,Password:password,NameLastname:Name+"/"+lastname,Email:email,Address:address,DateOfBirth:dateOfBirth} 
+                const EditUserDto={Id:id,Username:username,Password:password,NameLastname:Name+"/"+lastname,Email:email,Address:address,DateOfBirth:dateOfBirth,typeOfUser:props.user.typeOfUser} 
                 const resp2=await EditUserPut(EditUserDto,config);
                 if(resp2==''){
                     setData("Can not change data!")

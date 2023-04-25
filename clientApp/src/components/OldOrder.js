@@ -30,9 +30,9 @@ export default function OldOrder(props){
         console.log(elements);
     }
 
-   // useEffect(() =>{
+    useEffect(() =>{
         OrdersTableFill();
-    //},[])
+    },[])
 
     const otkazi=async (event,element)=>{
        
@@ -46,6 +46,7 @@ export default function OldOrder(props){
         else{
             setData("Decline succesfully!");
             openDialogBox();
+            OrdersTableFill();
         }
     }
 

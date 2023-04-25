@@ -1,6 +1,5 @@
 import React,{useState} from "react";
 import {  EditArticle } from "../services/ArticleService";
-import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import  backImage  from "../img/3893666_81805.jpg";
 import * as ReactDOMClient from 'react-dom/client';

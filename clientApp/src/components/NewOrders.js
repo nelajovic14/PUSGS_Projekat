@@ -1,13 +1,10 @@
 import React,{useState,useRef,useEffect} from "react";
 import { GetAllArticles } from "../services/ArticleService";
 import { AddOrder } from "../services/OrderService";
-import OrderArticle from "./OrderArticle"
-import * as ReactDOMClient from 'react-dom/client';
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 
 export default function NewOrder(props){
-    //console.log("props:"+props.user.typeOfUser);
     const [elements,setElements]=useState([]);
     const [listOfArticles,setList]=useState([]);
     const [quantity,setQ]=useState(0);

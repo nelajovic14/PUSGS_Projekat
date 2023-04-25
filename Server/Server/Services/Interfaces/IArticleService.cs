@@ -6,11 +6,11 @@ namespace Server.Services.Interfaces
 {
     public interface IArticleService
     {
-        ArticleDto AddNew(ArticleDto article);
-        ArticleDto Get(int Id);
-        ArticleDto Edit(ArticleDto article);
+        ArticleEditDto AddNew(ArticleDto article);
+        ArticleEditDto Get(int Id);
+        ArticleEditDto Edit(ArticleEditDto article);
         bool Delete(long Id);
-        List<ArticleDto> GetAll(); 
-        List<ArticleDto> GetAllForUser(int id); 
+        List<ArticleEditDto> GetAll(); 
+        List<ArticleEditDto> GetAllForUser(int id); 
     }
 }

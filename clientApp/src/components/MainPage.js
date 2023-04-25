@@ -10,6 +10,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NewArticleFunction from "./NewArticle";
 import LayoutAdmin from "./LayoutAdmin";
 import AllOrders from "./AllOrders";
+import UserRequest from "./UsersRequest";
 
 export default function MainPage(props){
     
@@ -51,6 +52,7 @@ export default function MainPage(props){
         <Route path="/" element={<LayoutAdmin />}>      
         <Route path='/EditInformation'  element={<EditUser user={props.user} />} />
         <Route path="/AllOrders" element={<AllOrders user={props.user}></AllOrders>}></Route>
+        <Route path="/Users" element={<UserRequest user={props.user}/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

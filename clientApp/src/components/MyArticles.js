@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useState,useEffect} from "react";
 import { DeleteArticle, EditArticle, GetAllUserArticles } from "../services/ArticleService";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
@@ -34,9 +34,9 @@ export default function NewOrder(props){
 
     }
         
-    //useEffect(() =>{
+    useEffect(() =>{
         tableArticles();
-    //},[])
+    },[])
 
     const obrisi=async (event,element)=>{
        
@@ -45,6 +45,7 @@ export default function NewOrder(props){
         console.log(respDelete);
         setData("Article is deleted!");
         openDialogBox();
+        tableArticles();
     }
 
     const edit=async (event,element)=>{

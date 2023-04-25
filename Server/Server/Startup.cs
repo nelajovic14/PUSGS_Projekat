@@ -15,6 +15,7 @@ using Server.Infrastructure;
 using Server.Initializer;
 using Server.Initializer.Interfaces;
 using Server.Mapping;
+using Server.Models;
 using Server.Repository;
 using Server.Repository.Interfaces;
 using Server.Services;
@@ -108,6 +109,7 @@ namespace Server
             services.AddScoped<IInitializer, UserInitializer>();
             services.AddScoped<IInitializer, ArticleInitializer>();
             services.AddScoped<IInitializer, OrderInitializer>();
+            services.AddScoped<IMailService, MailService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IOrderService, OrderService>();

@@ -42,9 +42,16 @@ namespace Server.Controllers
 
         [HttpPut("verificate")]
         [Authorize(Roles = "admin")]
-        public IActionResult Verificate([FromBody] UserLoginDto userLoginDto)
+        public IActionResult Verificate([FromBody] UserEditDto userLoginDto)
         {
             return Ok(_userService.Verificate(userLoginDto));
+        }
+
+        [HttpGet("getRequest")]
+        [Authorize(Roles = "admin")]
+        public IActionResult GetRequested()
+        {
+            return Ok(_userService.GetRequests());
         }
 
         [HttpGet("{id}")]
@@ -53,6 +60,13 @@ namespace Server.Controllers
         {
            // long id = Int64.Parse(ids);
             return Ok(_userService.GetUser(id));
+        }
+        [HttpPost("decline")]
+        [Authorize(Roles = "admin")]
+        public IActionResult Delete([FromBody]UserEditDto user)
+        {
+            _userService.Remove(user);
+            return Ok();
         }
     }
 }
