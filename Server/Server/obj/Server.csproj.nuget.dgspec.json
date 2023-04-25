@@ -53,13 +53,29 @@
               "target": "Package",
               "version": "[4.0.3, )"
             },
+            "DotNetOpenAuth.AspNet": {
+              "target": "Package",
+              "version": "[4.3.4.13329, )"
+            },
+            "FacebookCore": {
+              "target": "Package",
+              "version": "[2.1.13, )"
+            },
             "FluentEmail.Smtp": {
               "target": "Package",
               "version": "[3.0.2, )"
             },
+            "Google.Apis.Auth": {
+              "target": "Package",
+              "version": "[1.51.0, )"
+            },
             "MailKit": {
               "target": "Package",
               "version": "[4.0.0, )"
+            },
+            "Microsoft.AspNetCore.Authentication.Facebook": {
+              "target": "Package",
+              "version": "[3.1.32, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
@@ -100,6 +116,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[5.6.3, )"
+            },
+            "VisioForge.DotNet.Core.TRIAL": {
+              "target": "Package",
+              "version": "[15.1.12, )"
             }
           },
           "imports": [

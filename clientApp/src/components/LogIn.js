@@ -1,5 +1,5 @@
 import React,{useState} from "react";
-import { LogIn } from "../services/UserService";
+import { LogIn,LogInExternal } from "../services/UserService";
 import * as ReactDOMClient from 'react-dom/client';
 import Register from "./RegisterUser";
 import MainPage from "./MainPage";
@@ -7,13 +7,47 @@ import image from "../img/black-friday-elements-assortment2.jpg"
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import  backImage  from "../img/3893666_81805.jpg";
+import GoogleLogin from "react-google-login";
+import { gapi } from "gapi-script";
 
 export default function Login(){
 
+    gapi.load("client:auth2", () => {
+        gapi.client.init({
+          clientId:
+            "204473720538-b586qupb74fdgq0vdccc8vojnhm462o9.apps.googleusercontent.com",
+          plugin_name: "chat",
+        });
+      });
     const [username,setUsername]=useState('');
     const [password,setPassword]=useState('');
     const [data,setData]=useState('');
     const [openDialog, handleDisplay] = React.useState(false);
+
+
+    const responseGoogle = (response) => {
+        console.log(response);
+        // Send the access token to your backend
+        logExteranal(response);
+      }
+
+
+  
+    const logExteranal =async (response)=>{
+        const LogObject={provider:"GOOGLE",idToken:response.tokenId}
+        const logresp=await LogInExternal(LogObject);
+        console.log(logresp)
+        if(logresp.data.logedIn==true){
+            localStorage.setItem('token',logresp.data.token)
+            const container = document.getElementById('root');
+            const root = ReactDOMClient.createRoot(container);
+            root.render(<MainPage user={logresp.data.user}></MainPage>);
+        }
+        else{
+            setData("Wrong username or password!")
+            openDialogBox();
+        }
+    }
 
     const handleClose = () => {
         handleDisplay(false);
@@ -92,6 +126,20 @@ export default function Login(){
             <input type={"submit"} name='uloguj' value={"Log in"} onChange={handleInputChanges} class="btn btn-info"></input><br/>
         </form>
         <br/>
+        <GoogleLogin
+  clientId="204473720538-b586qupb74fdgq0vdccc8vojnhm462o9"
+  buttonText="Login with Google"
+  onSuccess={responseGoogle}
+  onFailure={responseGoogle}
+  cookiePolicy={'single_host_origin'}
+scope="profile"
+/>
+        <br/><br/>
+        
+      <br />
+      <br />
+
+
         <input type={"submit"} name='registruj' value={"Register"} onClick={register} class="btn btn-primary"></input><br/></p>
         <Dialog onClose = {handleClose} open = {openDialog}>
     <DialogTitle> LogiIn page </DialogTitle>

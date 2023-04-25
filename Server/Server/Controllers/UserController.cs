@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Google.Apis.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Server.Dto;
 using Server.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Server.Controllers
@@ -14,17 +18,25 @@ namespace Server.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IAuthService _authService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IAuthService authService)
         {
             _userService = userService;
+            _authService = authService;
         }
 
-        
+    
         [HttpPost("register")]
         public IActionResult Register([FromBody] UserDto userDto)
         {
             return Ok(_userService.AddUser(userDto));
+        }
+        [HttpPost("loginExternal")]
+        public IActionResult RegisterExternal([FromBody] ExternalRegister userDto)
+        {
+
+            return Ok(_userService.LoginExternal(userDto).Result);
         }
 
         [HttpPost("login")]

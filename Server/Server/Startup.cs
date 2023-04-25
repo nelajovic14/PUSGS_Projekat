@@ -41,13 +41,18 @@ namespace Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            //services.AddAuthentication().AddFacebook(facebookOptions =>
+            //{
+            //    facebookOptions.AppId = Configuration["FacebookAuthSettings:clientId"];
+            //    facebookOptions.AppSecret = Configuration["FacebookAuthSettings:clientSecret"];
+            //});
             services.AddControllers();
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
             services.AddDbContext<OrderDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("OrderDatabase")));
+                
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Server", Version = "v1" });
@@ -75,9 +80,10 @@ namespace Server
                     }
                 });
             });
-            
+
             //Dodajemo semu autentifikacije i podesavamo da se radi o JWT beareru
-            services.AddAuthentication(opt => {
+            services.AddAuthentication(opt =>
+            {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
@@ -92,7 +98,16 @@ namespace Server
                    ValidIssuer = "http://localhost:44316", //odredjujemo koji server je validni izdavalac
                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]))//navodimo privatni kljuc kojim su potpisani nasi tokeni
                };
+           })
+           .AddFacebook(options =>
+           {
+               options.AppId = "596560012405545";
+               options.AppSecret = "8d3a8fa4a78e1f84f357b042a458f6c6";
            });
+            //.AddFacebook(facebookOptions => {
+            //    facebookOptions.AppId = Configuration["FacebookAuthSettings:clientId"];
+            //    facebookOptions.AppSecret = Configuration["FacebookAuthSettings:clientSecret"];
+            //});
             services.AddCors(options =>
             {
                 options.AddPolicy(name: _cors, builder => {
@@ -109,6 +124,7 @@ namespace Server
             services.AddScoped<IInitializer, UserInitializer>();
             services.AddScoped<IInitializer, ArticleInitializer>();
             services.AddScoped<IInitializer, OrderInitializer>();
+            services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IMailService, MailService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IArticleService, ArticleService>();

@@ -4,9 +4,12 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import  backImage  from "../img/3893666_81805.jpg";
 
+
+
 export default function Register(){
     const [username,setUsername]=useState('');
     const [password,setPassword]=useState('');
+    const [password2,setPassword2]=useState('');
     const [Name,setName]=useState('');
     const [lastname,setLastname]=useState('');
     const [email,setEmail]=useState('');
@@ -32,6 +35,9 @@ export default function Register(){
         }
         if(name=="password"){
             setPassword(value);
+        }
+        if(name=="password2"){
+            setPassword2(value);
         }
         if(name=="name"){
             setName(value);
@@ -102,6 +108,18 @@ export default function Register(){
                 openDialogBox();
             }
 
+            else if(!password2){
+                passwordError = "Repeat password please!";
+                setData(passwordError);
+                openDialogBox();
+            }
+
+            else if(password!=password2){
+                passwordError = "You didnt repeat password well!";
+                setData(passwordError);
+                openDialogBox();
+            }
+
             else if (!Name) {
                 nameError = "Name field is required";
                 setData(nameError);
@@ -155,6 +173,9 @@ export default function Register(){
             
             Password: <input type={"password"} name='password' value={password} onChange={handleInputChanges}></input><br/><br/>
             
+            Password: <input type={"password"} name='password2' value={password2} onChange={handleInputChanges}></input><br/><br/>
+
+
             Name : <input type={"text"} name='name' value={Name} onChange={handleInputChanges}  ></input><br/><br/>
 
             Lastname : <input type={"text"} name='lastname' value={lastname} onChange={handleInputChanges}  ></input><br/><br/>
@@ -173,6 +194,8 @@ export default function Register(){
             <input type={"submit"} name='registruj' value={"Register"} onChange={handleInputChanges}></input><br/>
         </form>
         <br/>
+
+
         <Dialog onClose = {handleClose} open = {openDialog}>
             <DialogTitle> Registration </DialogTitle>
             <div class="p-5 text-center bg-image rounded-3" style={{ backgroundImage: `url(${backImage})`}}>

@@ -16,5 +16,6 @@ namespace Server.Services.Interfaces
         UserEditDto GetUser(long id);
         List<UserEditDto> GetRequests();
         void Remove(UserEditDto user);
+        Task<LoginResponseDto> LoginExternal(ExternalRegister userInfo);
     }
 }

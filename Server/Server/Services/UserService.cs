@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using DotNetOpenAuth.AspNet.Clients;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 using Server.Dto;
 using Server.Infrastructure;
 using Server.Models;
@@ -21,12 +23,16 @@ namespace Server.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IConfigurationSection _secretKey;
+        private readonly IConfigurationSection _facebookSettings;
         private readonly IMailService _mailservice;
-        public UserService(IUserRepository userRepository,IConfiguration config, IMailService mailservice)
+        private readonly IAuthService _authService;
+        public UserService(IUserRepository userRepository,IConfiguration config, IMailService mailservice, IAuthService authService)
         {
             _userRepository = userRepository;
             _secretKey = config.GetSection("SecretKey");
+            _facebookSettings = config.GetSection("FacebookAuthSettings");
             _mailservice = mailservice;
+            _authService = authService;
         }
 
         public UserDto AddUser(UserDto dto)
@@ -58,7 +64,38 @@ namespace Server.Services
             User u=_userRepository.Add(user);
             return new UserDto {Username=u.Username, Address = u.Address, DateOfBirth = u.DateOfBirth, Email = u.Email, NameLastname = u.NameLastname, UserImage = u.UserImage, Password = u.Password, TypeOfUser = u.TypeOfUser.ToString() };
         }
+        public InfoFromFacebook VerifyFacebookTokenAsync(ExternalRegister externalLogin)
+        {
+            string[] userInfo = { "id", "name", "email", "first_name", "last_name" };
+            if (string.IsNullOrEmpty(externalLogin.IdToken))
+            {
+                return null;
+            }
+            FacebookClient client = new FacebookClient(_facebookSettings.GetSection("clientId").Value,
+                                                       _facebookSettings.GetSection("clientSecret").Value);
+            //try
+            //{
+            //    FacebookUserApi api = client.GetUserApi(externalLogin.IdToken);
+            //    JObject info =  api.RequestInformationAsync(userInfo);
+            //    if (info == null)
+            //        return null;
+            //    InfoFromFacebook fbInfo = new InfoFromFacebook()
+            //    {
+            //        ID = (string)info["id"],
+            //        Name = (string)info["first_name"],
+            //        LastName = (string)info["last_name"],
+            //        Email = (string)info["email"],
 
+            //    };
+            //    return fbInfo;
+            //}
+            //catch
+            //{
+            //    return null;
+            //}
+            return null;
+        }
+        
         public UserEditDto Edit(UserEditDto dto)
         {
             
@@ -186,5 +223,73 @@ namespace Server.Services
             else
                 return null;
         }
+
+       
+        public async Task<LoginResponseDto> LoginExternal(ExternalRegister userInfo)
+        {
+            InfoFromFacebook socialInfo;
+            if (userInfo.Provider == "FACEBOOK")
+            {
+                socialInfo = await _authService.VerifyFacebookTokenAsync(userInfo);
+            }
+            else
+            {
+                socialInfo = await _authService.VerifyGoogleToken(userInfo);
+            }
+
+            if (socialInfo == null)
+                return null;
+            User user = _userRepository.FindEmail(new User { Email = socialInfo.Email });
+            if (user == null)
+            {
+                user = new User()
+                {
+                    Email = socialInfo.Email,
+                    Username = socialInfo.Email.Substring(0, socialInfo.Email.IndexOf("@")),
+                    NameLastname = socialInfo.Name+'/'+socialInfo.LastName,
+                    Password = socialInfo.ID,
+                    DateOfBirth = DateTime.Now, //Because user might have made this data private on account
+                    TypeOfUser = Enums.UserType.KUPAC,
+                    Address=socialInfo.Address,
+                    UserImage=socialInfo.Picture
+                };
+                if (user.UserImage == null)
+                {
+                    user.UserImage = "slika";
+                }
+                if (user.Address == null)
+                {
+                    user.Address = "adresa";
+                }
+                _userRepository.Add(user);
+
+            }
+            
+            List<Claim> claims = new List<Claim>();
+            claims.Add(new Claim(ClaimTypes.Role, "kupac"));
+
+
+            claims.Add(new Claim(ClaimTypes.Role, "user"));
+
+            SymmetricSecurityKey secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey.Value));
+            var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+            var tokeOptions = new JwtSecurityToken(
+                issuer: "http://localhost:44316", //url servera koji je izdao token
+                claims: claims, //claimovi
+                expires: DateTime.Now.AddYears(1), //vazenje tokena u minutama
+                signingCredentials: signinCredentials //kredencijali za potpis
+            );
+            string tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
+            LoginResponseDto res= new LoginResponseDto()
+            {
+                User = new UserEditDto { Username = user.Username, Address = user.Address, DateOfBirth = user.DateOfBirth, Email = user.Email, NameLastname = user.NameLastname, UserImage = user.UserImage, Password = user.Password, TypeOfUser = user.TypeOfUser.ToString(), Id = user.Id },
+                Token = tokenString,
+                LogedIn = true
+
+            };
+            return res;
+
+        }
+        
     }
 }
