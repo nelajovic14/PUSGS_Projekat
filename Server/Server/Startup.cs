@@ -98,11 +98,6 @@ namespace Server
                    ValidIssuer = "http://localhost:44316", //odredjujemo koji server je validni izdavalac
                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]))//navodimo privatni kljuc kojim su potpisani nasi tokeni
                };
-           })
-           .AddFacebook(options =>
-           {
-               options.AppId = "596560012405545";
-               options.AppSecret = "8d3a8fa4a78e1f84f357b042a458f6c6";
            });
             //.AddFacebook(facebookOptions => {
             //    facebookOptions.AppId = Configuration["FacebookAuthSettings:clientId"];

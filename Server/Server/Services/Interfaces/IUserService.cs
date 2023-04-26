@@ -9,7 +9,7 @@ namespace Server.Services.Interfaces
 {
     public interface IUserService
     {
-        UserDto AddUser(UserDto newUser);
+        UserEditDto AddUser(UserDto newUser);
         LoginResponseDto LogIn(UserLoginDto dto);
         UserEditDto Edit(UserEditDto dto);
         UserLoginDto Verificate(UserEditDto userLoginDto);

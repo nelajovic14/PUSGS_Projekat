@@ -35,7 +35,7 @@ namespace Server.Services
             _authService = authService;
         }
 
-        public UserDto AddUser(UserDto dto)
+        public UserEditDto AddUser(UserDto dto)
         {
             if(_userRepository.Find(new User { Username = dto.Username })!=null)
             {
@@ -62,7 +62,7 @@ namespace Server.Services
                 user.Verificated = false;
             }
             User u=_userRepository.Add(user);
-            return new UserDto {Username=u.Username, Address = u.Address, DateOfBirth = u.DateOfBirth, Email = u.Email, NameLastname = u.NameLastname, UserImage = u.UserImage, Password = u.Password, TypeOfUser = u.TypeOfUser.ToString() };
+            return new UserEditDto {Username=u.Username, Address = u.Address, DateOfBirth = u.DateOfBirth, Email = u.Email, NameLastname = u.NameLastname, UserImage = u.UserImage, Password = u.Password, TypeOfUser = u.TypeOfUser.ToString(), Id=u.Id };
         }
         public InfoFromFacebook VerifyFacebookTokenAsync(ExternalRegister externalLogin)
         {

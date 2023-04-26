@@ -86,7 +86,7 @@ export default function NewOrder(props){
                 openDialogBox();
             }
             else{
-                setData("Successfully order! "+"Final price : "+resp.data.finalyPrice+"\nDelivery date and time : "+resp.data.deliveryTime);
+                setData("Successfully order! "+"Final price : "+resp.data.finalyPrice+"\nDelivery date and time : "+resp.data.deliveryTime.split('T')[0] + " at "+ resp.data.deliveryTime.split('T')[1].split('.')[0]);
                 openDialogBox();
                 setList([]);
                 tableArticles();
@@ -101,7 +101,7 @@ export default function NewOrder(props){
         setQ(kol.current.value);
         var list=listOfArticles;
        if(kol.current.value<=0){
-            setData(<div>Can not order 0 articles!</div>)
+            setData("Can not order 0 articles!")
             openDialogBox();
         }
         else if(element.qunatity>=kol.current.value){
@@ -110,10 +110,10 @@ export default function NewOrder(props){
             setList(list);
         }
         else{
-            setData(<div>There is no enough of this article!</div>)
+            setData("There is no enough of this article!")
             openDialogBox();
         }
-        handleClose();
+       // handleClose();
     }
 
     const addOnList=(event,element)=>{

@@ -1,4 +1,4 @@
-import { RegisterUser } from "../services/UserService";
+import { RegisterUser,GetImage,AddImage } from "../services/UserService";
 import React,{useState,useRef} from "react";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
@@ -17,7 +17,8 @@ export default function Register(){
     const [dateOfBirth,setDateOfBirth]=useState('');
     const [data,setData]=useState('');
     const [openDialog, handleDisplay] = React.useState(false);
-
+    const [imageUrl,setImageUrl]=useState("");
+    const [file,setFile]=useState(null);
     const handleClose = () => {
         handleDisplay(false);
     };
@@ -63,8 +64,6 @@ export default function Register(){
         e.preventDefault();
         if(validate()){
 
-
-             
            const values={Username:username,Password:password,NameLastname:Name+"/"+lastname,Email:email,Address:address,TypeOfUser:uloga.current.value,DateOfBirth:dateInputRef.current.value};
             const resp= await RegisterUser(values);
             console.log(resp);
@@ -82,7 +81,10 @@ export default function Register(){
                 setData("Person with this username or email already exists!")
                 openDialogBox();
             }
-
+            if(file!=null){
+                const response=AddImage(file,resp.data.id);
+                console.log(response);
+            }
         }
     }
 
@@ -149,8 +151,7 @@ export default function Register(){
 
             const date1 = new Date(today.getFullYear(), today.getMonth(),today.getDate()); 
             const date2 = new Date(unos.split('-')[0], unos.split('-')[1], unos.split('-')[2]);
-            alert(unos)
-            alert(date2);
+
             if(date1<=date2){
                 setData("Can not be born in the future! Please change date field");
                 openDialogBox();
@@ -163,7 +164,16 @@ export default function Register(){
             }
             return true;
         }
-
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            console.log(file);
+            setImageUrl(file);
+            const formData = new FormData();
+            formData.append("image", file);
+            // send formData to the server
+            setFile(formData);
+            setImageUrl(file)
+          }
 
     return(
         <div class="jumbotron text-center">
@@ -191,6 +201,8 @@ export default function Register(){
                 <option value={'PRODAVAC'}>PRODAVAC</option>
             </select><br/><br/>
 
+            Image: <input type="file" onChange={handleFileSelect} />
+            {imageUrl && <img src={URL.createObjectURL(imageUrl)} height={300} width={300} />}<br/><br/>
             <input type={"submit"} name='registruj' value={"Register"} onChange={handleInputChanges}></input><br/>
         </form>
         <br/>

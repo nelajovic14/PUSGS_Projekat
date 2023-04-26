@@ -1,8 +1,9 @@
 import React,{useState,useEffect} from "react";
-import {GetUser,EditUserPut} from '../services/UserService'
+import {GetUser,EditUserPut,GetImage,AddImage,getImage2} from '../services/UserService'
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import  backImage  from "../img/3893666_81805.jpg";
+import { alignProperty } from "@mui/material/styles/cssUtils";
 
 export default function EditUser(props){
     const [id,setId]=useState(-1);
@@ -15,6 +16,8 @@ export default function EditUser(props){
     const [dateOfBirth,setDateOfBirth]=useState(new Date());
     const [data,setData]=useState('');
     const [openDialog, handleDisplay] = React.useState(false);
+    const [imageUrl,setImageUrl]=useState();
+    const [file,setFile]=useState(null);
 
     const handleClose = () => {
         handleDisplay(false);
@@ -46,7 +49,46 @@ export default function EditUser(props){
         
         setName(words[0]);
         setLastname(words[1]);
+
+        //const img=(await GetImage(user.id));
+        //console.log(img);
+        //const url = URL.createObjectURL(img.blob());
+        //setImageUrl(img.blob());
+        //setImageUrl(url);
+
+        //getImg(props.user.id);
+        getImage2(props.user.id);
+        
+        setImageUrl(localStorage.getItem('url'+props.user.id));
     }
+
+    const getImg =(id)=>{
+        fetch(`https://localhost:44316/api/users/images/${id}`)
+      .then(response => {
+        if (response.ok) {
+          return response.blob();
+        }
+        throw new Error('Network response was not ok');
+      })
+      .then(imageBlob => {
+        const url = URL.createObjectURL(imageBlob);
+        setImageUrl(url);
+      })
+      .catch(error => {
+        console.error('Error fetching image', error);
+      });
+  };
+    
+
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        setImageUrl(file);
+        const formData = new FormData();
+        formData.append("image", file);
+        // send formData to the server
+        setImageUrl(URL.createObjectURL(file));
+        setFile(formData);
+      }
 
     useEffect (()=>{
         
@@ -138,7 +180,18 @@ export default function EditUser(props){
                 }
                 else{
                     setData("You changed your data!")
-                    openDialogBox();
+                    //openDialogBox();
+                }
+                if(file!=null){
+                    const respImg=AddImage(file,props.user.id);
+                    
+                    console.log(respImg);
+                    if((await respImg).status==200){
+                        getImage2(props.user.id);
+                        //setImageUrl(localStorage.getItem('url'+props.user.id));
+                        setData("Well done.You changed your data!")
+                        openDialogBox();
+                    }
                 }
             }
         }
@@ -160,6 +213,12 @@ export default function EditUser(props){
             Date of Birth : <input type={"date"} name="dateOfBirth"  data-date-format="MM/DD/YYYY" value={dateOfBirth} onChange={handleInputChanges}></input><br/><br/>
 
             Address : <input type={"text"} name="address" value={address} onChange={handleInputChanges} ></input><br/><br/>
+            Image:
+            <div style={{'marginLeft':'600px'}}><input type={"file"} onChange={handleFileSelect}  /></div><br/>
+            
+            <img src={imageUrl} height={300} width={300} alt="Image"/>
+            
+            <br/><br/>
         <input type={"submit"} name='promeni' value={"Change"} ></input><br/>
 
     </form><br/>

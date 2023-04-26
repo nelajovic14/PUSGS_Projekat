@@ -1,5 +1,7 @@
 ﻿using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Server.Dto;
@@ -7,6 +9,7 @@ using Server.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,13 +23,48 @@ namespace Server.Controllers
         private readonly IUserService _userService;
         private readonly IAuthService _authService;
 
-        public UserController(IUserService userService, IAuthService authService)
+        IWebHostEnvironment webHostEnvironment;
+
+        public UserController(IUserService userService, IAuthService authService, IWebHostEnvironment webHostEnvironment)
         {
             _userService = userService;
             _authService = authService;
+            this.webHostEnvironment = webHostEnvironment;
         }
 
-    
+        [HttpPost("images/{id}")]
+        public async Task<IActionResult> UploadImage([FromForm] IFormFile image,int id)
+        {
+            try
+            {
+                var filePath = Path.Combine(webHostEnvironment.ContentRootPath, id + "");
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await image.CopyToAsync(stream);
+                }
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet("images/{id}")]
+        public IActionResult GetImage(int id)
+        {
+            try
+            {
+                var path = Path.Combine(webHostEnvironment.ContentRootPath, id + "");
+                //var stream = new FileStream(path, FileMode.Open);
+                //var file= File(stream, "image/jpeg");
+                var imageBytes = System.IO.File.ReadAllBytes(path);
+                return File(imageBytes, "image/jpeg");
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
         [HttpPost("register")]
         public IActionResult Register([FromBody] UserDto userDto)
         {
