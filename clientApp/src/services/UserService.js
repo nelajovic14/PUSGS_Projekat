@@ -1,15 +1,16 @@
 import axios from 'axios'
+const serverUrl = process.env.API_URL;
 
 export const LogIn = async(UserLoginDto)=>{
-    return await axios.post(`https://localhost:44316/api/users/login`,UserLoginDto);
+    return await axios.post(`${process.env.REACT_APP_API_URL}/api/users/login`,UserLoginDto);
 }
 
 export const LogInExternal = async(UserLoginDto)=>{
-    return await axios.post(`https://localhost:44316/api/users/loginExternal`,UserLoginDto);
+    return await axios.post(`${process.env.REACT_APP_API_URL}/api/users/loginExternal`,UserLoginDto);
 }
 
 export const getImage2 =(id)=>{
-    fetch(`https://localhost:44316/api/users/images/${id}`)
+    fetch(`${process.env.REACT_APP_API_URL}/api/users/images/${id}`)
   .then(response => {
     if (response.ok) {
       return response.blob();
@@ -29,33 +30,33 @@ export const getImage2 =(id)=>{
 };
 
 export const RegisterUser = async(UserDto)=>{
-    return await axios.post(`https://localhost:44316/api/users/register`,UserDto);
+    return await axios.post(`${process.env.REACT_APP_API_URL}/api/users/register`,UserDto);
 }
 
 export const AddImage = async(File,id)=>{
-    return await axios.post(`https://localhost:44316/api/users/images/${id}`,File);
+    return await axios.post(`${process.env.REACT_APP_API_URL}/api/users/images/${id}`,File);
 }
 
 export const GetImage = async(id)=>{
-    return await axios.get(`https://localhost:44316/api/users/images/${id}`);
+    return await axios.get(`${process.env.REACT_APP_API_URL}/api/users/images/${id}`);
 }
 
 export const GetUser=async(id,config)=>{
-    return await axios.get(`https://localhost:44316/api/users/${id}`,config);
+    return await axios.get(`${process.env.REACT_APP_API_URL}/api/users/${id}`,config);
 }
 
 export const EditUserPut=async(UserEditDto,config)=>{
-    return await axios.put(`https://localhost:44316/api/users/edit`,UserEditDto,config)
+    return await axios.put(`${process.env.REACT_APP_API_URL}/api/users/edit`,UserEditDto,config)
 }
 
 export const GetUserRequest=async(config)=>{
-    return await axios.get(`https://localhost:44316/api/users/getRequest`,config);
+    return await axios.get(`${process.env.REACT_APP_API_URL}/api/users/getRequest`,config);
 }
 
 export const Verificate = async(UserDto,config)=>{
-    return await axios.put(`https://localhost:44316/api/users/verificate`,UserDto,config);
+    return await axios.put(`${process.env.REACT_APP_API_URL}/api/users/verificate`,UserDto,config);
 }
 
 export const DeclineVer = async(User,config)=>{
-    return await axios.post(`https://localhost:44316/api/users/decline`,User,config);
+    return await axios.post(`${process.env.REACT_APP_API_URL}/api/users/decline`,User,config);
 }

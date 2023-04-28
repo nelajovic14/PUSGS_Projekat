@@ -1,31 +1,31 @@
 import axios from 'axios'
 
 export const GetAllArticles = async(config)=>{
-    return await axios.get(`https://localhost:44316/api/article`,config);
+    return await axios.get(`${process.env.REACT_APP_API_URL}/api/article`,config);
 }
 
 export const GetAllUserArticles = async(id,config)=>{
-    return await axios.get(`https://localhost:44316/api/article/getAllFromUser/${id}`,config);
+    return await axios.get(`${process.env.REACT_APP_API_URL}/api/article/getAllFromUser/${id}`,config);
 }
 
 export const DeleteArticle=async (id,config)=>{
-    return await axios.delete(`https://localhost:44316/api/article/${id}`,config)
+    return await axios.delete(`${process.env.REACT_APP_API_URL}/api/article/${id}`,config)
 }
 
 export const AddArticle=async (Article,config)=>{
-    return await axios.post(`https://localhost:44316/api/article/add`,Article,config)
+    return await axios.post(`${process.env.REACT_APP_API_URL}/api/article/add`,Article,config)
 }
 
 export const EditArticle=async (Article,config)=>{
-    return await axios.put(`https://localhost:44316/api/article`,Article,config)
+    return await axios.put(`${process.env.REACT_APP_API_URL}/api/article`,Article,config)
 }
 
 export const AddImage = async(File,id)=>{
-    return await axios.post(`https://localhost:44316/api/article/images/${id}`,File);
+    return await axios.post(`${process.env.REACT_APP_API_URL}/api/article/images/${id}`,File);
 }
 
 export const getImage2 =(id)=>{
-    fetch(`https://localhost:44316/api/article/images/${id}`)
+    fetch(`${process.env.REACT_APP_API_URL}/api/article/images/${id}`)
   .then(response => {
     if (response.ok) {
       return response.blob();

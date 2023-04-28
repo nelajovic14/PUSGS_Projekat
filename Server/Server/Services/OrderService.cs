@@ -193,30 +193,26 @@ namespace Server.Services
         {
             Order order = _orderRepository.Find(id);
             DateTime oT = order.OrderTime.AddHours(1);
-            List<Order> ListForDecline = new List<Order>();
-            if (oT >= DateTime.Now)
+            if (oT >= order.OrderTime)
             {
-                foreach (var o in GetAllForUSer(order.UserId))
+                List<OrderShowDto> orders = GetAllForUSer(order.UserId);
+                foreach (var o in orders)
                 {
                     if (order.UserId == o.UserId && order.OrderTime == o.OrderTime)
                     {
-                        Order orderFromdto = _mapper.Map<Order>(o);
+                        Order orderFromdto = _orderRepository.Find(o.Id);
                         //(o).State = EntityState.Detached;
                         orderFromdto.Customer = _userRepository.FindById(o.UserId);
-                        //_orderRepository.Decline(orderFromdto);
-                        ListForDecline.Add(orderFromdto);
+                        _orderRepository.Decline(orderFromdto);
+                        //ListForDecline.Add(orderFromdto);
                         Article article = _articleRepository.GetArticle(orderFromdto.ArticleId);
                         article.Qunatity += orderFromdto.Quantity;
                         _articleRepository.Edit(article);
                     }
                 }
-                foreach(var o in ListForDecline)
-                {
-                    _orderRepository.Decline(o);
-                }
                 return true;
-            }
-            return false;
+            }  
+                return false;
         }
         public List<OrderShowDto> GetForSpecialUser(int id)
         {
@@ -370,7 +366,7 @@ namespace Server.Services
             List<Order> orders = _orderRepository.GetAll();
             foreach (var o in orders)
             {
-                if (o.IsDeliverd == true && ((o.OrderTime.Date == order.OrderTime.Date) && (o.OrderTime.Day == order.OrderTime.Day) && (o.OrderTime.Hour == order.OrderTime.Hour) && (o.OrderTime.Minute == order.OrderTime.Minute)) && o.Id==order.Id)
+                if (o.IsDeliverd == true && ((o.OrderTime.Date == order.OrderTime.Date) && (o.OrderTime.Day == order.OrderTime.Day) && (o.OrderTime.Hour == order.OrderTime.Hour) && (o.OrderTime.Minute == order.OrderTime.Minute)) && o.UserId==order.UserId)
                 {
                     OrderDto orderDto = _mapper.Map<OrderDto>(o);
                     if (orderDto.Article == null)
