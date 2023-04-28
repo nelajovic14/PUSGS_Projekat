@@ -8,10 +8,11 @@ namespace Server.Services.Interfaces
     public interface IOrderService
     {
         OrderBackDto AddNew(OrderDtoList orderDto);
-        List<OrderDto> GetAllForUSer(long id,bool old);
-        List<OrderDto> GetAll();
-        List<OrderDto> GetForSpecialUser(int id);
-        List<OrderDto> GetForSpecialUserNew(int id);
+        List<OrderShowDto> GetAllForUSer(long id);
+        List<OrderShowDto> GetAll();
+        List<OrderShowDto> GetForSpecialUser(int id);
+        List<OrderShowDto> GetForSpecialUserNew(int id);
         bool Decline(long id);
+        OrderShowDto GetToShowOrder(long id);
     }
 }

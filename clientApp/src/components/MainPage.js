@@ -4,7 +4,8 @@ import NewOrder from "./NewOrders";
 import EditUser from "./EditUser";
 import OldOrder from "./OldOrder";
 import MyArticles from "./MyArticles"
-import OrdersOfUser from "./OrdersOfUser"
+import NewOrdersSaler from "./NewOrderSaler"
+import OldOrdersUser from "./OldOrderSaler";
 import * as ReactDOMClient from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NewArticleFunction from "./NewArticle";
@@ -37,8 +38,8 @@ export default function MainPage(props){
             <Route path="/" element={<LayoutProdavac />}>      
             <Route path='/EditInformation'  element={<EditUser user={props.user} />} />
             <Route path="/MyArticles" element={<MyArticles user={props.user}/>}/>
-            <Route path="/NewOrdersUser" element={<OrdersOfUser user={props.user} IsOld={false}/>}/>
-            <Route path="/OldOrdersUser" element={<OrdersOfUser user={props.user} IsOld={true}/>}/>
+            <Route path="/NewOrdersUser" element={<NewOrdersSaler user={props.user} IsOld={false}/>}/>
+            <Route path="/OldOrdersUser" element={<OldOrdersUser user={props.user} IsOld={true}/>}/>
             <Route path="/AddNew" element={<NewArticleFunction user={props.user}/>}/>
             </Route>
         </Routes>

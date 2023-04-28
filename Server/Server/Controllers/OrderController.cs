@@ -29,33 +29,26 @@ namespace Server.Controllers
                 return Ok(new OrderBackDto { Id = -1 });
             }
             return Ok(_orderService.AddNew(orderDto));
-        }
-        [HttpGet("getnew/{id}")]
-        [Authorize(Roles ="user")]
-        public IActionResult GetNew(int id)
-        {
-            if (id != 0)
-            {
-                return Ok(_orderService.GetAllForUSer(id,false));
-            }
-            return Ok(new OrderBackDto { Id = -1 });
-        }
-        [HttpGet("getold/{id}")]
+        }     
+
+        [HttpGet("getForCustmer/{id}")]
         [Authorize(Roles = "user")]
         public IActionResult GetOld(int id)
         {
             if (id != 0)
             {
-                return Ok(_orderService.GetAllForUSer(id,true));
+                return Ok(_orderService.GetAllForUSer(id));
             }
             return Ok(new OrderBackDto { Id = -1 });
         }
+
         [HttpGet]
         [Authorize(Roles ="admin")]
         public IActionResult GetAll()
         {
             return Ok(_orderService.GetAll());
         }
+
         [HttpPut("decline")]
         [Authorize(Roles ="kupac")]
         public IActionResult Decline([FromBody] OrderDto order)
@@ -63,17 +56,28 @@ namespace Server.Controllers
                 return Ok(_orderService.Decline(order.Id));
             
         }
+
         [HttpGet("getForUser/{id}")]
         [Authorize(Roles = "prodavac")]
         public IActionResult GetAllForUser(int id)
         {
             return Ok(_orderService.GetForSpecialUser(id));
         }
+
         [HttpGet("getForUserNew/{id}")]
         [Authorize(Roles = "prodavac")]
         public IActionResult GetAllForUserNew(int id)
         {
             return Ok(_orderService.GetForSpecialUserNew(id));
         }
+
+        [HttpGet("show/{id}")]
+        [Authorize(Roles ="user")]
+        public IActionResult GetOrder(int id)
+        {
+            return Ok(_orderService.GetToShowOrder(id));
+        }
+
+
     }
 }

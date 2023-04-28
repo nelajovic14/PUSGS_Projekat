@@ -1,6 +1,8 @@
-﻿using Server.Dto;
+﻿using Microsoft.AspNetCore.Http;
+using Server.Dto;
 using Server.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Server.Services.Interfaces
 {
@@ -11,6 +13,8 @@ namespace Server.Services.Interfaces
         ArticleEditDto Edit(ArticleEditDto article);
         bool Delete(long Id);
         List<ArticleEditDto> GetAll(); 
-        List<ArticleEditDto> GetAllForUser(int id); 
+        List<ArticleEditDto> GetAllForUser(int id);
+        Task<bool> UploadImage(IFormFile image, int id);
+        byte[] GetImage(int id);
     }
 }

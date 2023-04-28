@@ -37,11 +37,7 @@ namespace Server.Controllers
         {
             try
             {
-                var filePath = Path.Combine(webHostEnvironment.ContentRootPath, id + "");
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await image.CopyToAsync(stream);
-                }
+                await _userService.UploadImage(image, id);
                 return Ok();
             }
             catch
@@ -52,17 +48,15 @@ namespace Server.Controllers
         [HttpGet("images/{id}")]
         public IActionResult GetImage(int id)
         {
-            try
-            {
-                var path = Path.Combine(webHostEnvironment.ContentRootPath, id + "");
-                //var stream = new FileStream(path, FileMode.Open);
-                //var file= File(stream, "image/jpeg");
-                var imageBytes = System.IO.File.ReadAllBytes(path);
-                return File(imageBytes, "image/jpeg");
-            }
-            catch
+           
+            var imagesbytes = _userService.GetImage(id);
+            if (imagesbytes.Length == 1)
             {
                 return NotFound();
+            }
+            else
+            {
+                return File(imagesbytes, "image/jpeg");
             }
         }
         [HttpPost("register")]

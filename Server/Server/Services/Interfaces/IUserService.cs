@@ -1,4 +1,5 @@
-﻿using Server.Dto;
+﻿using Microsoft.AspNetCore.Http;
+using Server.Dto;
 using Server.Models;
 using System;
 using System.Collections.Generic;
@@ -17,5 +18,7 @@ namespace Server.Services.Interfaces
         List<UserEditDto> GetRequests();
         void Remove(UserEditDto user);
         Task<LoginResponseDto> LoginExternal(ExternalRegister userInfo);
+        Task<bool> UploadImage(IFormFile image, int id);
+        byte[] GetImage(int id);
     }
 }

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using DotNetOpenAuth.AspNet.Clients;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
@@ -12,6 +14,7 @@ using Server.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -26,13 +29,15 @@ namespace Server.Services
         private readonly IConfigurationSection _facebookSettings;
         private readonly IMailService _mailservice;
         private readonly IAuthService _authService;
-        public UserService(IUserRepository userRepository,IConfiguration config, IMailService mailservice, IAuthService authService)
+        IWebHostEnvironment webHostEnvironment;
+        public UserService(IUserRepository userRepository,IConfiguration config, IMailService mailservice, IAuthService authService, IWebHostEnvironment webHostEnvironment)
         {
             _userRepository = userRepository;
             _secretKey = config.GetSection("SecretKey");
             _facebookSettings = config.GetSection("FacebookAuthSettings");
             _mailservice = mailservice;
             _authService = authService;
+            this.webHostEnvironment = webHostEnvironment;
         }
 
         public UserEditDto AddUser(UserDto dto)
@@ -290,6 +295,38 @@ namespace Server.Services
             return res;
 
         }
-        
+
+        public async Task<bool> UploadImage(IFormFile image, int id)
+        {
+            try
+            {
+                UserEditDto userEditDto = GetUser(id);
+                var filePath = Path.Combine(webHostEnvironment.ContentRootPath, "images",  id + "");
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await image.CopyToAsync(stream);
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public byte[] GetImage(int id)
+        {
+            try
+            {
+                UserEditDto userEditDto = GetUser(id);
+                var path = Path.Combine(webHostEnvironment.ContentRootPath, "images",id + "");
+                var imageBytes = System.IO.File.ReadAllBytes(path);
+                return imageBytes;
+            }
+            catch
+            {
+                return new byte[0];
+            }
+        }
     }
 }

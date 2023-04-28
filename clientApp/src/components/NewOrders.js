@@ -1,5 +1,5 @@
 import React,{useState,useRef,useEffect} from "react";
-import { GetAllArticles } from "../services/ArticleService";
+import { GetAllArticles ,getImage2} from "../services/ArticleService";
 import { AddOrder } from "../services/OrderService";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
@@ -21,6 +21,9 @@ export default function NewOrder(props){
         const resp=await GetAllArticles(config);
         console.log(resp);
         setElements(resp.data)
+        resp.data.forEach(element => {
+            getImage2(element.id);
+        });
         console.log(elements);
 
     }
@@ -140,13 +143,13 @@ export default function NewOrder(props){
     const elementi=elements.map(element => <tr><td>
         {element.name}</td><td >{element.price}</td><td >
         {element.qunatity}</td><td>{element.description}</td>
-        <td>{element.image}</td>
+        <td><img src={localStorage.getItem('url-article'+element.id)} height={100} width={100} alt="Image"/></td>
         <td><input type={"button"} class="btn btn-link" onClick={(event)=>addOnList(event,element)}  value={"Poruči"}></input></td>
         </tr>);
 
     const articles=listOfArticles.map(element => <tr><td>
     {element.name}</td><td>{element.qunatity}</td><td >{element.price}</td><td>{element.description}</td>
-    <td>{element.image}</td><td><input type={"button"} class="btn btn-link" onClick={(event)=>deletefromList(event,element)}  value={"Delete"}/></td>
+    <td><img src={localStorage.getItem('url-article'+element.id)} height={100} width={100} alt="Image"/></td><td><input type={"button"} class="btn btn-link" onClick={(event)=>deletefromList(event,element)}  value={"Delete"}/></td>
     </tr>);
 
     return(

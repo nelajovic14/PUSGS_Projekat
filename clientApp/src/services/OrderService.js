@@ -1,7 +1,11 @@
 import axios from 'axios'
 //`${process.env.VUE_APP_BASE_URL}/login/`
 export const GetOrders = async(id,config)=>{
-    return await axios.get(`https://localhost:44316/api/order/getold/${id}`,config);
+    return await axios.get(`https://localhost:44316/api/order/getForCustmer/${id}`,config);
+}
+
+export const GetOrdersToShow = async(id,config)=>{
+    return await axios.get(`https://localhost:44316/api/order/show/${id}`,config);
 }
 
 export const DeclineOrder = async(element,config)=>{
@@ -21,5 +25,5 @@ export const AddOrder = async(Order,config)=>{
 }
 
 export const GetAllOrders = async(config)=>{
-    return await axios.get(`https://localhost:44316/api/order/`,config);
+    return await axios.get(`https://localhost:44316/api/order`,config);
 }

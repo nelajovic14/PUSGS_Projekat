@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Server.Dto;
 using Server.Models;
 using Server.Repository.Interfaces;
@@ -28,6 +29,8 @@ namespace Server.Services
             List<Order> orders = new List<Order>();
             List<Article> articles = new List<Article>();
             orderBack.FinalyPrice = 0;
+            int dostava = 0;
+            List<int> UsersIds = new List<int>();
             foreach(Article a in orderDto.Articles)
             {
                 Article article = _articleRepository.GetArticle(a.Id);
@@ -42,6 +45,11 @@ namespace Server.Services
                         orders.Add(order);
 
                         articles.Add(article);
+                        if (!UsersIds.Contains((int)a.UserId))
+                        {
+                            dostava += 300;
+                            UsersIds.Add((int)a.UserId);
+                        }
                     }
                     else
                     {
@@ -52,16 +60,9 @@ namespace Server.Services
                 {
                     return null;
                 }
-                //orderBack.DeliveryTime = DateTime.Now.AddDays(1);
                 
-                //order = _orderRepository.AddNew(order);
-               // orderBack.Id = order.Id;
-               // orderBack.IsDeliverd = true;
-                //article.Qunatity -= orderDto.Quantity;
-                //_articleRepository.Edit(article);
-                //return orderBack;
             }
-            orderBack.FinalyPrice += 300;
+            orderBack.FinalyPrice += dostava;
             orderBack.DeliveryTime = DateTime.Now.AddDays(1);
             
             foreach(Order o in orders)
@@ -76,41 +77,18 @@ namespace Server.Services
                 _articleRepository.Edit(article1);
             }
             return orderBack;
-            //Article article = _articleRepository.GetArticle(orderDto.ArticleId);
-            //if (article != null)
-            //{
-            //    if (article.Qunatity >= orderDto.Quantity)
-            //    {
-            //        orderBack.FinalyPrice = orderDto.Price * orderDto.Quantity + 300;
-            //        orderBack.DeliveryTime = DateTime.Now.AddDays(1);
-            //        Order order = new Order { Address = orderDto.Address, Quantity = orderDto.Quantity, Price = orderDto.Price, Comment = orderDto.Comment, DeliveryTime = orderBack.DeliveryTime, FinalPrice = orderBack.FinalyPrice, IsDeliverd = true, OrderTime = DateTime.Now, UserId = orderDto.UserId, ArticleId=orderDto.ArticleId };
-
-            //        order = _orderRepository.AddNew(order);
-            //        orderBack.Id = order.Id;
-            //        orderBack.IsDeliverd = true;
-            //        article.Qunatity -= orderDto.Quantity;
-            //        _articleRepository.Edit(article);
-            //        return orderBack;
-            //    }
-            //    else
-            //    {
-            //        return null;
-            //    }
-            //}
-            //else
-            //{
-            //    return null;
-            //}
+           
         }
 
-        public List<OrderDto> GetAllForUSer(long id,bool old)
+        public List<OrderShowDto> GetAllForUSer(long id)
         {
             User user = _userRepository.FindById(id);
             List<OrderDto> orderDtos = new List<OrderDto>();
-            if (user.TypeOfUser == Enums.UserType.ADMINISTRATOR)
+            
+            List<Order> orders = _orderRepository.GetAllFromUser(id);
+            foreach (var o in orders)
             {
-                List<Order> orders = _orderRepository.GetAll();
-                foreach(var o in orders)
+                if ( o.IsDeliverd==true && o.UserId==id)
                 {
                     OrderDto orderDto = _mapper.Map<OrderDto>(o);
                     if (orderDto.Article == null)
@@ -120,109 +98,127 @@ namespace Server.Services
                     }
                     orderDtos.Add(orderDto);
                 }
-                return orderDtos;
             }
-            else if (user.TypeOfUser == Enums.UserType.PRODAVAC)
-            {
-                List<Order> orders = _orderRepository.GetAll();
-                List<Article> articles = _articleRepository.GetArticlesForOwner(id);
-                foreach(var o in orders)
-                {
 
-                    if (articles.Find(x => x.Id == o.ArticleId)!=null)
-                    {
-                        //if (old)
-                        //{
-                            if ( o.IsDeliverd == true)
-                            {
-                            OrderDto orderDto = _mapper.Map<OrderDto>(o);
-                            if (orderDto.Article == null)
-                            {
-                                Article pomArt = _articleRepository.GetArticle(orderDto.ArticleId);
-                                orderDto.Article = pomArt;
-                            }
-                            orderDtos.Add(orderDto);
-                        }
-                        //}
-                        //else
-                        //{
-                            //if (o.DeliveryTime > DateTime.Now && o.IsDeliverd == true)
-                            //{
-                            //    OrderDto orderDto = _mapper.Map<OrderDto>(o);
-                            //    orderDtos.Add(orderDto);
-                            //}
-                       // }
-                    }
-                }
-                return orderDtos;
-            }
-            else
+            List<OrderShowDto> ordersToShow = new List<OrderShowDto>();
+            List<int> alreadyBeenAdd = new List<int>();
+            for (int i = 0; i < orderDtos.Count - 1; i++)
             {
-                //if (old)
-                //{
-                    List<Order> orders = _orderRepository.GetAllFromUser(id);
-                    foreach (var o in orders)
+                OrderShowDto orderShowDto = new OrderShowDto();
+                List<ArticleEditDto> articles = new List<ArticleEditDto>();
+                if (!alreadyBeenAdd.Contains(i))
+                {
+                    alreadyBeenAdd.Add(i);
+                    articles.Add(_mapper.Map<ArticleEditDto>(orderDtos[i].Article));
+                    for (int j = i + 1; j < orderDtos.Count; j++)
                     {
-                        if ( o.IsDeliverd==true)
+                        if ((orderDtos[i].OrderTime.Date == orderDtos[j].OrderTime.Date) && (orderDtos[i].OrderTime.Day == orderDtos[j].OrderTime.Day) && (orderDtos[i].OrderTime.Hour == orderDtos[j].OrderTime.Hour) && (orderDtos[i].OrderTime.Minute == orderDtos[j].OrderTime.Minute))
                         {
-                            OrderDto orderDto = _mapper.Map<OrderDto>(o);
-                            if (orderDto.Article == null)
+                            if (!alreadyBeenAdd.Contains(j))
                             {
-                            Article pomArt = _articleRepository.GetArticle(orderDto.ArticleId);
-                            orderDto.Article = pomArt;
+                                articles.Add(_mapper.Map<ArticleEditDto>(orderDtos[j].Article));
+                                alreadyBeenAdd.Add(j);
                             }
-                            orderDtos.Add(orderDto);
                         }
                     }
-                //}
-                //else
-                //{
-                    //List<Order> orders = _orderRepository.GetAllFromUser(id);
-                    //foreach (var o in orders)
-                    //{
-                    //    if (o.DeliveryTime > DateTime.Now && o.IsDeliverd == true)
-                    //    {
-                    //        OrderDto orderDto = _mapper.Map<OrderDto>(o);
-                    //        orderDtos.Add(orderDto);
-                    //    }
-                    //}
-                //}
-                return orderDtos;
+                    orderShowDto.Address = orderDtos[i].Address;
+                    orderShowDto.Articles = articles;
+                    orderShowDto.UserId = orderDtos[i].UserId;
+                    orderShowDto.Comment = orderDtos[i].Comment;
+                    orderShowDto.FinalPrice = orderDtos[i].FinalPrice;
+                    orderShowDto.OrderTime = orderDtos[i].OrderTime;
+                    orderShowDto.DeliveryTime = orderDtos[i].DeliveryTime;
+                    orderShowDto.Id = (int)orderDtos[i].Id;
+                    ordersToShow.Add(orderShowDto);
+                }
             }
+            return ordersToShow;
+
         }
-        public List<OrderDto> GetAll()
+        public List<OrderShowDto> GetAll()
         {
             List<OrderDto> orderDtos = new List<OrderDto>();
+
             List<Order> orders = _orderRepository.GetAll();
             foreach (var o in orders)
             {
-                OrderDto orderDto = _mapper.Map<OrderDto>(o);
-                if (orderDto.Article == null)
+                if (o.IsDeliverd == true)
                 {
-                    Article pomArt = _articleRepository.GetArticle(orderDto.ArticleId);
-                    orderDto.Article = pomArt;
+                    OrderDto orderDto = _mapper.Map<OrderDto>(o);
+                    if (orderDto.Article == null)
+                    {
+                        Article pomArt = _articleRepository.GetArticle(orderDto.ArticleId);
+                        orderDto.Article = pomArt;
+                    }
+                    orderDtos.Add(orderDto);
                 }
-                orderDtos.Add(orderDto);
             }
-            return orderDtos;
+
+            List<OrderShowDto> ordersToShow = new List<OrderShowDto>();
+            List<int> alreadyBeenAdd = new List<int>();
+            for (int i = 0; i < orderDtos.Count - 1; i++)
+            {
+                OrderShowDto orderShowDto = new OrderShowDto();
+                List<ArticleEditDto> articles = new List<ArticleEditDto>();
+                if (!alreadyBeenAdd.Contains(i))
+                {
+                    alreadyBeenAdd.Add(i);
+                    articles.Add(_mapper.Map<ArticleEditDto>(orderDtos[i].Article));
+                    for (int j = i + 1; j < orderDtos.Count; j++)
+                    {
+                        if ((orderDtos[i].OrderTime.Date == orderDtos[j].OrderTime.Date) && (orderDtos[i].OrderTime.Day == orderDtos[j].OrderTime.Day) && (orderDtos[i].OrderTime.Hour == orderDtos[j].OrderTime.Hour) && (orderDtos[i].OrderTime.Minute == orderDtos[j].OrderTime.Minute))
+                        {
+                            if (!alreadyBeenAdd.Contains(j))
+                            {
+                                articles.Add(_mapper.Map<ArticleEditDto>(orderDtos[j].Article));
+                                alreadyBeenAdd.Add(j);
+                            }
+                        }
+                    }
+                    orderShowDto.Address = orderDtos[i].Address;
+                    orderShowDto.Articles = articles;
+                    orderShowDto.UserId = orderDtos[i].UserId;
+                    orderShowDto.Comment = orderDtos[i].Comment;
+                    orderShowDto.FinalPrice = orderDtos[i].FinalPrice;
+                    orderShowDto.OrderTime = orderDtos[i].OrderTime;
+                    orderShowDto.DeliveryTime = orderDtos[i].DeliveryTime;
+                    orderShowDto.Id = (int)orderDtos[i].Id;
+                    ordersToShow.Add(orderShowDto);
+                }
+            }
+            return ordersToShow;
         }
 
         public bool Decline(long id)
         {
             Order order = _orderRepository.Find(id);
             DateTime oT = order.OrderTime.AddHours(1);
-            Order orde = _mapper.Map<Order>(order);
+            List<Order> ListForDecline = new List<Order>();
             if (oT >= DateTime.Now)
             {
-                _orderRepository.Decline(orde);
-                Article article = _articleRepository.GetArticle(order.ArticleId);
-                article.Qunatity += order.Quantity;
-                _articleRepository.Edit(article);
+                foreach (var o in GetAllForUSer(order.UserId))
+                {
+                    if (order.UserId == o.UserId && order.OrderTime == o.OrderTime)
+                    {
+                        Order orderFromdto = _mapper.Map<Order>(o);
+                        //(o).State = EntityState.Detached;
+                        orderFromdto.Customer = _userRepository.FindById(o.UserId);
+                        //_orderRepository.Decline(orderFromdto);
+                        ListForDecline.Add(orderFromdto);
+                        Article article = _articleRepository.GetArticle(orderFromdto.ArticleId);
+                        article.Qunatity += orderFromdto.Quantity;
+                        _articleRepository.Edit(article);
+                    }
+                }
+                foreach(var o in ListForDecline)
+                {
+                    _orderRepository.Decline(o);
+                }
                 return true;
             }
             return false;
         }
-        public List<OrderDto> GetForSpecialUser(int id)
+        public List<OrderShowDto> GetForSpecialUser(int id)
         {
             User user = _userRepository.FindById(id);
             List<OrderDto> orderDtos = new List<OrderDto>();
@@ -257,11 +253,44 @@ namespace Server.Services
                     }
                 }
             }
-            return orderDtos;
-            
+           
+            List<OrderShowDto> ordersToShow = new List<OrderShowDto>();
+            List<int> alreadyBeenAdd = new List<int>();
+            for (int i = 0; i < orderDtos.Count - 1; i++)
+            {
+                OrderShowDto orderShowDto = new OrderShowDto();
+                List<ArticleEditDto> articles = new List<ArticleEditDto>();
+                if (!alreadyBeenAdd.Contains(i))
+                {
+                    alreadyBeenAdd.Add(i);
+                    articles.Add(_mapper.Map<ArticleEditDto>(orderDtos[i].Article));
+                    for (int j = i + 1; j < orderDtos.Count; j++)
+                    {
+                        if ((orderDtos[i].OrderTime.Date == orderDtos[j].OrderTime.Date) && (orderDtos[i].OrderTime.Day == orderDtos[j].OrderTime.Day) && (orderDtos[i].OrderTime.Hour == orderDtos[j].OrderTime.Hour) && (orderDtos[i].OrderTime.Minute == orderDtos[j].OrderTime.Minute))
+                        {
+                            if (!alreadyBeenAdd.Contains(j))
+                            {
+                                articles.Add(_mapper.Map<ArticleEditDto>(orderDtos[j].Article));
+                                alreadyBeenAdd.Add(j);
+                            }
+                        }
+                    }
+                    orderShowDto.Address = orderDtos[i].Address;
+                    orderShowDto.Articles = articles;
+                    orderShowDto.UserId = orderDtos[i].UserId;
+                    orderShowDto.Comment = orderDtos[i].Comment;
+                    orderShowDto.FinalPrice = orderDtos[i].FinalPrice;
+                    orderShowDto.OrderTime = orderDtos[i].OrderTime;
+                    orderShowDto.DeliveryTime = orderDtos[i].DeliveryTime;
+                    orderShowDto.Id = (int)orderDtos[i].Id;
+                    ordersToShow.Add(orderShowDto);
+                }
+            }
+            return ordersToShow;
+
         }
 
-        public List<OrderDto> GetForSpecialUserNew(int id)
+        public List<OrderShowDto> GetForSpecialUserNew(int id)
         {
             User user = _userRepository.FindById(id);
             List<OrderDto> orderDtos = new List<OrderDto>();
@@ -296,8 +325,78 @@ namespace Server.Services
                     }
                 }
             }
-            return orderDtos;
+            List<OrderShowDto> ordersToShow = new List<OrderShowDto>();
+            List<int> alreadyBeenAdd = new List<int>();
+            for (int i = 0; i < orderDtos.Count - 1; i++)
+            {
+                OrderShowDto orderShowDto = new OrderShowDto();
+                List<ArticleEditDto> articles = new List<ArticleEditDto>();
+                if (!alreadyBeenAdd.Contains(i))
+                {
+                    alreadyBeenAdd.Add(i);
+                    articles.Add(_mapper.Map<ArticleEditDto>(orderDtos[i].Article));
+                    for (int j = i + 1; j < orderDtos.Count; j++)
+                    {
+                        if ((orderDtos[i].OrderTime.Date == orderDtos[j].OrderTime.Date) && (orderDtos[i].OrderTime.Day == orderDtos[j].OrderTime.Day) && (orderDtos[i].OrderTime.Hour == orderDtos[j].OrderTime.Hour) && (orderDtos[i].OrderTime.Minute == orderDtos[j].OrderTime.Minute))
+                        {
+                            if (!alreadyBeenAdd.Contains(j))
+                            {
+                                articles.Add(_mapper.Map<ArticleEditDto>(orderDtos[j].Article));
+                                alreadyBeenAdd.Add(j);
+                            }
+                        }
+                    }
+                    orderShowDto.Address = orderDtos[i].Address;
+                    orderShowDto.Articles = articles;
+                    orderShowDto.UserId = orderDtos[i].UserId;
+                    orderShowDto.Comment = orderDtos[i].Comment;
+                    orderShowDto.FinalPrice = orderDtos[i].FinalPrice;
+                    orderShowDto.OrderTime = orderDtos[i].OrderTime;
+                    orderShowDto.DeliveryTime = orderDtos[i].DeliveryTime;
+                    orderShowDto.Id = (int)orderDtos[i].Id;
+                    ordersToShow.Add(orderShowDto);
+                }
+            }
+            return ordersToShow;
 
+        }
+
+        public OrderShowDto GetToShowOrder(long id)
+        {
+            Order order = _orderRepository.Find(id);
+            List<OrderDto> orderDtos = new List<OrderDto>();
+            List<ArticleEditDto> articles = new List<ArticleEditDto>();
+
+            List<Order> orders = _orderRepository.GetAll();
+            foreach (var o in orders)
+            {
+                if (o.IsDeliverd == true && ((o.OrderTime.Date == order.OrderTime.Date) && (o.OrderTime.Day == order.OrderTime.Day) && (o.OrderTime.Hour == order.OrderTime.Hour) && (o.OrderTime.Minute == order.OrderTime.Minute)) && o.Id==order.Id)
+                {
+                    OrderDto orderDto = _mapper.Map<OrderDto>(o);
+                    if (orderDto.Article == null)
+                    {
+                        Article pomArt = _articleRepository.GetArticle(orderDto.ArticleId);
+                        orderDto.Article = pomArt;
+                        ArticleEditDto articleEditDto = _mapper.Map<ArticleEditDto>(pomArt);
+                        articleEditDto.Qunatity = o.Quantity;
+                        articles.Add(articleEditDto);
+                    }
+                    orderDtos.Add(orderDto);
+                }
+            }
+
+           OrderShowDto orderShowDto = new OrderShowDto();
+
+            orderShowDto.Address = order.Address;
+            orderShowDto.Articles = articles;
+            orderShowDto.UserId = order.UserId;
+            orderShowDto.Comment = order.Comment;
+            orderShowDto.FinalPrice= order.FinalPrice;
+            orderShowDto.OrderTime = order.OrderTime;
+            orderShowDto.DeliveryTime = order.DeliveryTime;
+            orderShowDto.Id =(int)order.Id;
+                
+            return orderShowDto;
         }
     }
 }

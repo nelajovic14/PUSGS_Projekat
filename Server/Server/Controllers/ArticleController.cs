@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Server.Dto;
 using Server.Services.Interfaces;
+using System.Threading.Tasks;
 
 namespace Server.Controllers
 {
@@ -51,6 +53,33 @@ namespace Server.Controllers
         public IActionResult GetAllForUser(int id)
         {
             return Ok(_articleService.GetAllForUser(id));
+        }
+        [HttpPost("images/{id}")]
+        public async Task<IActionResult> UploadImage([FromForm] IFormFile image, int id)
+        {
+            try
+            {
+                await _articleService.UploadImage(image, id);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet("images/{id}")]
+        public IActionResult GetImage(int id)
+        {
+
+            var imagesbytes = _articleService.GetImage(id);
+            if (imagesbytes.Length == 1)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return File(imagesbytes, "image/jpeg");
+            }
         }
     }
 }

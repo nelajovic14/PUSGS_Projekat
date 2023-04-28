@@ -1,5 +1,5 @@
-import React,{useState} from "react";
-import {  EditArticle } from "../services/ArticleService";
+import React,{useState,useEffect} from "react";
+import {  EditArticle,AddImage,getImage2 } from "../services/ArticleService";
 import Dialog from "@mui/material/Dialog";
 import  backImage  from "../img/3893666_81805.jpg";
 import * as ReactDOMClient from 'react-dom/client';
@@ -11,9 +11,19 @@ export default function EditArticleFunction(props){
     const [cena,setCena]=useState(props.article.price);
     const [kolicina,setKolicina]=useState(props.article.qunatity);
     const [opis,setOpis]=useState(props.article.description);
-    const [slika,setSlika]=useState(props.article.image);
     const [data,setData]=useState('');
     const [openDialog, handleDisplay] = React.useState(false);
+    const [imageUrl,setImageUrl]=useState("");
+    const [file,setFile]=useState(null);
+
+
+    useEffect (()=>{
+
+        const resp=getImage2(props.article.id);
+        //console.log(resp);
+       setImageUrl(localStorage.getItem('url-article'+props.article.id));
+       
+    },[]);
 
     const handleClose = () => {
         handleDisplay(false);
@@ -84,27 +94,50 @@ export default function EditArticleFunction(props){
                 setData("Something is wrong, you can not edit article!")
                 openDialogBox();
             }
+            if(file!=null){
+                const response=AddImage(file,props.article.id);
+                console.log(response);
+                    if((await response).status==200){
+                        getImage2(props.article.id);
+                        //setImageUrl(localStorage.getItem('url'+props.user.id));
+                        setData("Well done.You changed your data!")
+                        openDialogBox();
+                    }
+            }
         }
 
     }
     const back =e=>{
         e.preventDefault();
         const container = document.getElementById('root');
-            const root = ReactDOMClient.createRoot(container);
-            root.render(<MainPage user={props.user}></MainPage>)
+        const root = ReactDOMClient.createRoot(container);
+        root.render(<MainPage user={props.user}></MainPage>)
     }
+
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        console.log(file);
+        setImageUrl(file);
+        const formData = new FormData();
+        formData.append("image", file);
+        // send formData to the server
+        setFile(formData);
+        setImageUrl(URL.createObjectURL(file));
+      }
 
 
     return(
         <div class="container text-center">
-            <div class="alert alert-warning"><strong><h1>NEW ARTICLE</h1></strong></div>
+            <div class="alert alert-warning"><strong><h1>EDIT ARTICLE</h1></strong></div>
             <form onSubmit={edit}>
-               Name : <input  type={"text"} name="naziv" value={naziv} onChange={handleInputChanges}></input><br/><br/>
-               Price : <input  type={"number"} name="cena" value={cena} onChange={handleInputChanges}></input><br/><br/>
-               Quantity : <input  type={"number"} name="kolicina" value={kolicina} onChange={handleInputChanges}></input><br/><br/>
-               Description : <input  type={"text"} name="opis" value={opis} onChange={handleInputChanges}></input><br/><br/>
-               Image : <input  type={"text"} name="slika" value={slika} onChange={handleInputChanges}></input><br/><br/>
-               <input type={"submit"} name='edit' value={"Edit"} onChange={handleInputChanges} class="btn btn-info"></input><br/>
+               Name : <input  type={"text"} name="naziv" value={naziv} onChange={handleInputChanges}/><br/><br/>
+               Price : <input  type={"number"} name="cena" value={cena} onChange={handleInputChanges}/><br/><br/>
+               Quantity : <input  type={"number"} name="kolicina" value={kolicina} onChange={handleInputChanges}/><br/><br/>
+               Description : <input  type={"text"} name="opis" value={opis} onChange={handleInputChanges}/><br/><br/>
+               Image: <div><input type={"file"} onChange={handleFileSelect}  /></div><br/>
+            
+            <img src={imageUrl} height={300} width={300} alt="Image"/><br/><br/>
+               <input type={"submit"} name='edit' value={"Edit"} onChange={handleInputChanges} class="btn btn-warning"/><br/>
             </form><br/>
             <Dialog onClose = {handleClose} open = {openDialog}>
             <div class="p-5 text-center bg-image rounded-3" style={{ backgroundImage: `url(${backImage})`}}>
@@ -117,7 +150,7 @@ export default function EditArticleFunction(props){
             </div>
             </div>
          </Dialog>
-         <input type={"submit"} name='back' value={"Back"} onClick={back}></input><br/>
+         <input type={"submit"} name='back' value={"Back"} onClick={back} class="btn btn-warning"/><br/>
         </div>
     )
 }

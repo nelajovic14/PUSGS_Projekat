@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Server.Dto;
 using Server.Models;
 using Server.Repository.Interfaces;
 using Server.Services.Interfaces;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Server.Services
 {
@@ -12,11 +16,14 @@ namespace Server.Services
         private readonly IArticleRepository _articleRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        public ArticleService(IMapper mapper,IArticleRepository articleRepository, IUserRepository userRepository)
+        IWebHostEnvironment webHostEnvironment;
+
+        public ArticleService(IMapper mapper,IArticleRepository articleRepository, IUserRepository userRepository, IWebHostEnvironment webHostEnvironment)
         {
             _articleRepository = articleRepository;
             _mapper = mapper;
             _userRepository = userRepository;
+            this.webHostEnvironment=webHostEnvironment;
         }
 
         public ArticleEditDto AddNew(ArticleDto article)
@@ -46,10 +53,6 @@ namespace Server.Services
         {
             Article article = _articleRepository.GetArticle(Id);
             ArticleEditDto articleDto=_mapper.Map<ArticleEditDto>(article);
-            //if(articleDto.User == null)
-            //{
-            //    articleDto.User = _mapper.Map<UserDto>(_userRepository.FindById(article.UserId));
-            //}
             return articleDto;
         }
 
@@ -76,6 +79,39 @@ namespace Server.Services
                 }
             }
             return articleDtos;
+        }
+
+        public byte[] GetImage(int id)
+        {
+            try
+            {
+                ArticleEditDto article = Get(id);
+                var path = Path.Combine(webHostEnvironment.ContentRootPath, "articlesImage",  id + "");
+                var imageBytes = System.IO.File.ReadAllBytes(path);
+                return imageBytes;
+            }
+            catch
+            {
+                return new byte[0];
+            }
+        }
+
+        public async Task<bool> UploadImage(IFormFile image, int id)
+        {
+            try
+            {
+                ArticleEditDto article = Get(id);
+                var filePath = Path.Combine(webHostEnvironment.ContentRootPath, "articlesImage", id + "");
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await image.CopyToAsync(stream);
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

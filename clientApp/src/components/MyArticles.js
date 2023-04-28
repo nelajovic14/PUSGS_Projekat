@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from "react";
-import { DeleteArticle, EditArticle, GetAllUserArticles } from "../services/ArticleService";
+import { DeleteArticle, GetAllUserArticles,getImage2 } from "../services/ArticleService";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import  backImage  from "../img/3893666_81805.jpg";
@@ -30,6 +30,9 @@ export default function NewOrder(props){
         const resp=await GetAllUserArticles(props.user.id,config);
         console.log(resp);
         setElements(resp.data)
+        resp.data.forEach(element => {
+            getImage2(element.id);
+        });
         console.log(elements);
 
     }
@@ -59,7 +62,7 @@ export default function NewOrder(props){
     const elementi=elements.map(element => <tr><td>
         {element.name}</td><td >{element.price}</td><td >
         {element.qunatity}</td><td>{element.description}</td>
-        <td>{element.image}</td>
+        <td><img src={localStorage.getItem('url-article'+element.id)} height={100} width={100} alt="Image"/></td>
         <td><input type={"button"} class="btn btn-link" onClick={(event)=>obrisi(event,element)}  value={"Delete"}></input></td>
         <td><input type={"button"} class="btn btn-link" onClick={(event)=>edit(event,element)}  value={"Edit"}></input></td>
         </tr>);

@@ -50,35 +50,11 @@ export default function EditUser(props){
         setName(words[0]);
         setLastname(words[1]);
 
-        //const img=(await GetImage(user.id));
-        //console.log(img);
-        //const url = URL.createObjectURL(img.blob());
-        //setImageUrl(img.blob());
-        //setImageUrl(url);
-
-        //getImg(props.user.id);
-        getImage2(props.user.id);
-        
         setImageUrl(localStorage.getItem('url'+props.user.id));
+
     }
 
-    const getImg =(id)=>{
-        fetch(`https://localhost:44316/api/users/images/${id}`)
-      .then(response => {
-        if (response.ok) {
-          return response.blob();
-        }
-        throw new Error('Network response was not ok');
-      })
-      .then(imageBlob => {
-        const url = URL.createObjectURL(imageBlob);
-        setImageUrl(url);
-      })
-      .catch(error => {
-        console.error('Error fetching image', error);
-      });
-  };
-    
+   
 
     function handleFileSelect(event) {
         const file = event.target.files[0];
@@ -92,6 +68,7 @@ export default function EditUser(props){
 
     useEffect (()=>{
         
+        const resp=getImage2(props.user.id);
         fillFields();
        
     },[]);

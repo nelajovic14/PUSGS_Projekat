@@ -49,8 +49,12 @@ namespace Server.Repository
             List<Order> orders = new List<Order>();
             foreach(Order order in _orderDbContext.Orders)
             {
-                if(order.UserId == userId)
+                if (order.UserId == userId)
+                {
+
+                    _orderDbContext.Entry(order).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
                     orders.Add(order);
+                }
             }
             return orders;
         }

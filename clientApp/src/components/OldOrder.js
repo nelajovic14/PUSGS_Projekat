@@ -1,8 +1,10 @@
 import React,{useState,useEffect} from "react";
-import { GetOrders, DeclineOrder } from "../services/OrderService";
+import { GetOrders, DeclineOrder,GetOrdersToShow } from "../services/OrderService";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import  backImage  from "../img/3893666_81805.jpg";
+import ShowOrder from "./ShowOrder";
+import * as ReactDOMClient from 'react-dom/client';
 
 export default function OldOrder(props){
 
@@ -50,13 +52,19 @@ export default function OldOrder(props){
         }
     }
 
+    const showOrder =(event,element)=>{
+        event.preventDefault();
+        const container = document.getElementById('root');
+        const root = ReactDOMClient.createRoot(container);
+        root.render(<ShowOrder order={element.id} user={props.user}/>);
+    }
 
-    const elementi=elements.map(element => <tr><td>
-        {element.article.name}</td><td >{element.quantity}</td><td >
-        {element.price}</td><td>{element.finalPrice}</td>
+    const elementi=elements.map(element => <tr>
+        <td>{element.finalPrice}</td>
         <td>{element.orderTime.split('T')[0]+" at "+element.orderTime.split('T')[1]}</td><td>{element.deliveryTime.split('T')[0]+" at "+element.deliveryTime.split('T')[1]}</td>
         <td>{element.comment}</td><td>{element.address}</td>
         <td><input type={"button"} class="btn btn-link" onClick={(event)=>otkazi(event,element)}  value={"Decline"}></input></td>
+        <td><input type={"button"} class="btn btn-link" onClick={(event)=>showOrder(event,element)}  value={"Show"}/></td>
         </tr>);
     return(
             <div>
@@ -64,15 +72,13 @@ export default function OldOrder(props){
                 <div class="alert alert-warning"><strong><h1>Orders</h1></strong></div>
                 <table class="table table-bordered">
                     <tr>
-                        <td ><b>Name</b></td>
-                        <td ><b>Quantity</b></td>
-                        <td><b>Price</b></td>
                         <td><b>Final price</b></td>
                         <td><b>Order time</b></td>
                         <td><b>Delivery time</b></td>
                         <td><b>Comment</b></td>
                         <td><b>Address</b></td>
                         <td>Decline</td>
+                        <td>Show order</td>
                         </tr>
                         {elementi}
             </table></div><Dialog onClose = {handleClose} open = {openDialog}>

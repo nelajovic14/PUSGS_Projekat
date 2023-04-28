@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from "react";
-import { AddArticle } from "../services/ArticleService";
+import { AddArticle,AddImage,getImage2 } from "../services/ArticleService";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import  backImage  from "../img/3893666_81805.jpg";
@@ -13,6 +13,9 @@ export default function NewArticleFunction(props){
     const [slika,setSlika]=useState('');
     const [data,setData]=useState('');
     const [openDialog, handleDisplay] = React.useState(false);
+
+    const [imageUrl,setImageUrl]=useState("");
+    const [file,setFile]=useState(null);
 
     const handleClose = () => {
         handleDisplay(false);
@@ -86,10 +89,26 @@ export default function NewArticleFunction(props){
                 setData("Something is wrong, you can not add new article!")
                 openDialogBox();
             }
+            if(file!=null){
+                const response=AddImage(file,resp.data.id);
+                console.log(response);
+            }
         }
+        
+
 
     }
 
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        console.log(file);
+        setImageUrl(file);
+        const formData = new FormData();
+        formData.append("image", file);
+        // send formData to the server
+        setFile(formData);
+        setImageUrl(file)
+      }
 
     return(
         <div class="container text-center">
@@ -99,7 +118,8 @@ export default function NewArticleFunction(props){
                Price : <input  type={"number"} name="cena" value={cena} onChange={handleInputChanges}></input><br/><br/>
                Quantity : <input  type={"number"} name="kolicina" value={kolicina} onChange={handleInputChanges}></input><br/><br/>
                Description : <input  type={"text"} name="opis" value={opis} onChange={handleInputChanges}></input><br/><br/>
-               Image : <input  type={"text"} name="slika" value={slika} onChange={handleInputChanges}></input><br/><br/>
+               Image: <input type="file" onChange={handleFileSelect} style={{"marginLeft":"300px"}}/>
+            {imageUrl && <img src={URL.createObjectURL(imageUrl)} height={300} width={300} />}<br/><br/>
                <input type={"submit"} name='addnes' value={"Add new"} onChange={handleInputChanges} class="btn btn-info"></input><br/>
             </form>
             <Dialog onClose = {handleClose} open = {openDialog}>
