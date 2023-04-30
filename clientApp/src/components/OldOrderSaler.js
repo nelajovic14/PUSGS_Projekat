@@ -7,17 +7,15 @@ export default function OldOrdersUser(props){
     const [elements,setElements]=useState([]);
 
     const config = {
-        headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'),}
+        headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'+props.user.id),}
     };
 
     const OrdersTableFill=async (e)=>{
-
-            const resp=await GetUserOrders(props.user.id,config);
-            console.log("resp:"+resp);
-            setElements(resp.data)
-            console.log("staro");
+        const resp=await GetUserOrders(props.user.id,config);
+        console.log(resp);
+        setElements(resp.data)
+        console.log("staro");
        
-        
     }
 
     useEffect(() =>{

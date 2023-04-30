@@ -95,6 +95,7 @@ export default function Register(){
         let addressError="";
         let birtdayError="";
         let emailError="";
+        let imageError="";
 
         const validate=()=>{
             
@@ -146,6 +147,12 @@ export default function Register(){
                 openDialogBox();
             }
 
+            else if(!imageUrl){
+                imageError = "Image is required";
+                setData(imageError);
+                openDialogBox();
+            }
+
             var today = new Date();
             var unos=dateInputRef.current.value;
 
@@ -159,7 +166,7 @@ export default function Register(){
             }
 
 
-            if (nameError || passwordError || usernameError || lastnameError || birtdayError || emailError || addressError) {
+            if (nameError || passwordError || usernameError || lastnameError || birtdayError || emailError || addressError || imageError) {
                 return false;
             }
             return true;
@@ -190,7 +197,7 @@ export default function Register(){
 
             Lastname : <input type={"text"} name='lastname' value={lastname} onChange={handleInputChanges}  ></input><br/><br/>
 
-            Email : <input type={"text"} name='email' value={email} onChange={handleInputChanges}  ></input><br/><br/>
+            Email : <input type="email" name='email' value={email} onChange={handleInputChanges}  ></input><br/><br/>
 
             Date of Birth : <input type={"date"} name="date" ref={dateInputRef}></input><br/><br/>
 

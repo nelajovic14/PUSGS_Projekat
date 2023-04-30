@@ -69,6 +69,12 @@ export default function NewArticleFunction(props){
             openDialogBox();
             valid=false;
         }
+        else if(!imageUrl){
+            let imageError = "Image is required";
+            setData(imageError);
+            openDialogBox();
+            valid=false;
+        }
         return valid;
     }
     
@@ -76,7 +82,7 @@ export default function NewArticleFunction(props){
         e.preventDefault();
         if(validate()){
             const config = {
-                headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'),}
+                headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'+props.user.id),}
             };
             const Article={name:naziv,description:opis,qunatity:kolicina,price:cena,userId:props.user.id};
             const resp=await AddArticle(Article,config);

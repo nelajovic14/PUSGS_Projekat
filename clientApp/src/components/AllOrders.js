@@ -6,7 +6,7 @@ import * as ReactDOMClient from 'react-dom/client';
 export default function AllOrders(props){
     const [elements,setElements]=useState([]);
     const config = {
-        headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'),}
+        headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'+props.user.id)}
     };
 
     const OrdersTableFill=async (e)=>{

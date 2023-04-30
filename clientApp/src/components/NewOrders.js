@@ -14,7 +14,7 @@ export default function NewOrder(props){
     const [comment,setComment]=useState('');
     const kol=useRef(0);
     const config = {
-        headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'),}
+        headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'+props.user.id),}
     };
 
     const tableArticles=async (e)=>{

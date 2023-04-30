@@ -38,7 +38,7 @@ export default function Login(){
         const logresp=await LogInExternal(LogObject);
         console.log(logresp)
         if(logresp.data.logedIn==true){
-            localStorage.setItem('token',logresp.data.token)
+            localStorage.setItem('token'+logresp.data.user.id,logresp.data.token)
             const container = document.getElementById('root');
             const root = ReactDOMClient.createRoot(container);
             root.render(<MainPage user={logresp.data.user}></MainPage>);
@@ -76,7 +76,7 @@ export default function Login(){
                 const resp=await LogIn(values);
                 console.log(resp);
                 if(resp.data.logedIn==true){
-                    localStorage.setItem('token',resp.data.token)
+                    localStorage.setItem('token'+resp.data.user.id,resp.data.token)
                     const container = document.getElementById('root');
                     const root = ReactDOMClient.createRoot(container);
                     root.render(<MainPage user={resp.data.user}></MainPage>);

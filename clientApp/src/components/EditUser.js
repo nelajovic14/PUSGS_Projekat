@@ -28,7 +28,7 @@ export default function EditUser(props){
     };
 
     const config = {
-        headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'),}
+        headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'+props.user.id)}
     };
 
     const fillFields=async (e)=>{
@@ -51,7 +51,8 @@ export default function EditUser(props){
         setLastname(words[1]);
 
         setImageUrl(localStorage.getItem('url'+props.user.id));
-
+        console.log("image")
+        console.log(localStorage.getItem('url'+props.user.id))
     }
 
    
@@ -108,6 +109,7 @@ export default function EditUser(props){
         let addressError="";
         let birtdayError="";
         let emailError="";
+        let imageError="";
 
         const validate=()=>{
             
@@ -140,7 +142,13 @@ export default function EditUser(props){
                 openDialogBox();
             }
 
-            if (nameError || usernameError || lastnameError || birtdayError || emailError || addressError) {
+            else if(!imageUrl){
+                imageError = "Image is required";
+                setData(imageError);
+                openDialogBox();
+            }
+
+            if (nameError || usernameError || lastnameError || birtdayError || emailError || addressError || imageError) {
                 return false;
             }
             return true;

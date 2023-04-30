@@ -15,7 +15,7 @@ export default function UserRequest(props){
         handleDisplay(true);
     };
     const config = {
-        headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'),}
+        headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'+props.user.id),}
     };
     
     const getUsers=async ()=>{

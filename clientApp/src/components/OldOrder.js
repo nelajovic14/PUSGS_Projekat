@@ -22,12 +22,12 @@ export default function OldOrder(props){
 
 
     const config = {
-        headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'),}
+        headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'+props.user.id),}
     };
 
     const OrdersTableFill=async (e)=>{
         const resp=await GetOrders(props.user.id,config);
-        console.log("resp:"+resp);
+        console.log(resp);
         setElements(resp.data)
         console.log(elements);
     }

@@ -45,6 +45,7 @@ namespace Server.Controllers
                 return BadRequest();
             }
         }
+
         [HttpGet("images/{id}")]
         public IActionResult GetImage(int id)
         {
@@ -59,11 +60,13 @@ namespace Server.Controllers
                 return File(imagesbytes, "image/jpeg");
             }
         }
+
         [HttpPost("register")]
         public IActionResult Register([FromBody] UserDto userDto)
         {
             return Ok(_userService.AddUser(userDto));
         }
+
         [HttpPost("loginExternal")]
         public IActionResult RegisterExternal([FromBody] ExternalRegister userDto)
         {
@@ -105,6 +108,7 @@ namespace Server.Controllers
            // long id = Int64.Parse(ids);
             return Ok(_userService.GetUser(id));
         }
+
         [HttpPost("decline")]
         [Authorize(Roles = "admin")]
         public IActionResult Delete([FromBody]UserEditDto user)

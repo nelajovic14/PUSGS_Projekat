@@ -7,7 +7,7 @@ export default function NewOrdersSaler(props){
     const [elements,setElements]=useState([]);
 
     const config = {
-        headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'),}
+        headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'+props.user.id),}
     };
 
     const OrdersTableFill=async (e)=>{

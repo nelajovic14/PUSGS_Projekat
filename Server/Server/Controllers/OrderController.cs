@@ -50,7 +50,7 @@ namespace Server.Controllers
         }
 
         [HttpPut("decline")]
-        [Authorize(Roles ="kupac")]
+        [Authorize(Roles = "kupac")]
         public IActionResult Decline([FromBody] OrderDto order)
         {
                 return Ok(_orderService.Decline(order.Id));

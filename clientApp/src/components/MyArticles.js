@@ -23,7 +23,7 @@ export default function NewOrder(props){
 
 
     const config = {
-        headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'),}
+        headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'+props.user.id),}
     };
 
     const tableArticles=async (e)=>{

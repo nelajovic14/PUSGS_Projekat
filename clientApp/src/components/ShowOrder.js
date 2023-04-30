@@ -12,10 +12,9 @@ export default function ShowOrder(props){
     const [comment,setComment]=useState('');
     const [address, setAddress]=useState('');
     const [imageUrl,setImageUrl]=useState("");
-    const [deliverycost,setDeliverycost]=useState("");
 
     const config = {
-        headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'),}
+        headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'+props.user.id),}
     };
 
     const GetInfo=async (e)=>{
@@ -37,8 +36,7 @@ export default function ShowOrder(props){
         });
         console.log(cost);
         console.log(resp.data.finalPrice);
-        let delC=((resp.data.finalPrice+0)-(cost+0));
-        setDeliverycost(delC);
+
     }
 
     useEffect(() =>{
@@ -65,7 +63,6 @@ export default function ShowOrder(props){
             <div class="container text-center">
                 <div class="alert alert-warning"><strong><h1>Order</h1></strong></div>
                 <b>Final price : {finalPrice}</b><br/><br/>
-                <b>Delivery costs : {deliverycost}</b><br/><br/>
                 <b>Order time : {orderTime}</b><br/><br/>
                 <b>Delivery time : {deliveryTime}</b><br/><br/>
                 <b>Comment : {comment}</b><br/><br/>

@@ -12,8 +12,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Server.Infrastructure;
-using Server.Initializer;
-using Server.Initializer.Interfaces;
 using Server.Mapping;
 using Server.Models;
 using Server.Repository;
@@ -116,9 +114,6 @@ namespace Server
             {
                 options.AddPolicy("user", policy => policy.RequireClaim("user")); //Ovde mozemo kreirati pravilo za validaciju nekog naseg claima
             });
-            services.AddScoped<IInitializer, UserInitializer>();
-            services.AddScoped<IInitializer, ArticleInitializer>();
-            services.AddScoped<IInitializer, OrderInitializer>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IMailService, MailService>();
             services.AddScoped<IUserService, UserService>();
@@ -145,11 +140,6 @@ namespace Server
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Server v1"));
-            }
-            using (var scope = app.ApplicationServices.CreateScope())
-            {
-                // koristi se za inicijalizaciju podataka
-                scope.ServiceProvider.GetRequiredService<IInitializer>().Initialize();
             }
             app.UseHttpsRedirection();
             app.UseCors(_cors);
