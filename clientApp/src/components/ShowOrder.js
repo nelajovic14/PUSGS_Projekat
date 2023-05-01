@@ -22,7 +22,7 @@ export default function ShowOrder(props){
         console.log(resp);
         setArticles(resp.data.articles);
         resp.data.articles.forEach(element => {
-            getImage2(element.id);
+            getImage2(element.id,config);
         });
         setFinalPrice(resp.data.finalPrice);
         setDeliveryTime(resp.data.deliveryTime.split('T')[0]+" at "+resp.data.deliveryTime.split('T')[1].split('.')[0]);

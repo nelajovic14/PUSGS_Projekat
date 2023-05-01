@@ -20,11 +20,11 @@ export const EditArticle=async (Article,config)=>{
     return await axios.put(`${process.env.REACT_APP_API_URL}/api/article`,Article,config)
 }
 
-export const AddImage = async(File,id)=>{
-    return await axios.post(`${process.env.REACT_APP_API_URL}/api/article/images/${id}`,File);
+export const AddImage = async(File,id,config)=>{
+    return await axios.post(`${process.env.REACT_APP_API_URL}/api/article/images/${id}`,File,config);
 }
 
-export const getImage2 =(id)=>{
+export const getImage2 =(id,config)=>{
     fetch(`${process.env.REACT_APP_API_URL}/api/article/images/${id}`)
   .then(response => {
     if (response.ok) {

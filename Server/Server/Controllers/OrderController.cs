@@ -17,7 +17,7 @@ namespace Server.Controllers
         }
 
         [HttpPost("add")]
-        [Authorize(Roles ="user")]
+        [Authorize(Roles ="kupac")]
         public IActionResult Add([FromBody]OrderDtoList orderDto)
         {
             if(orderDto == null)

@@ -16,10 +16,13 @@ export default function EditArticleFunction(props){
     const [imageUrl,setImageUrl]=useState("");
     const [file,setFile]=useState(null);
 
+    const config = {
+        headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'+props.user.id),}
+    };
 
     useEffect (()=>{
 
-        const resp=getImage2(props.article.id);
+        const resp=getImage2(props.article.id,config);
         //console.log(resp);
        setImageUrl(localStorage.getItem('url-article'+props.article.id));
        
@@ -86,9 +89,7 @@ export default function EditArticleFunction(props){
     const edit =async e=>{
         e.preventDefault();
         if(validate()){
-            const config = {
-                headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'+props.user.id),}
-            };
+            
             const Article={name:naziv,description:opis,qunatity:kolicina,price:cena,userId:props.user.id,id:props.article.id};
             const resp=await EditArticle(Article,config);
             console.log(resp);
@@ -101,10 +102,10 @@ export default function EditArticleFunction(props){
                 openDialogBox();
             }
             if(file!=null){
-                const response=AddImage(file,props.article.id);
+                const response=AddImage(file,props.article.id,config);
                 console.log(response);
                     if((await response).status==200){
-                        getImage2(props.article.id);
+                        getImage2(props.article.id,config);
                         //setImageUrl(localStorage.getItem('url'+props.user.id));
                         setData("Well done.You changed your data!")
                         openDialogBox();

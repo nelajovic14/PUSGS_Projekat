@@ -15,8 +15,15 @@ namespace Server.Repository
 
         public Order AddNew(Order order)
         {
-            _orderDbContext.Orders.Add(order);
-            _orderDbContext.SaveChanges();
+            var entityToLock = _orderDbContext;
+            if (entityToLock != null)
+            {
+                lock (_orderDbContext)
+                {
+                    _orderDbContext.Orders.Add(order);
+                    _orderDbContext.SaveChanges();
+                }
+            }
             return order;
         }
 

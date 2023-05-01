@@ -24,37 +24,44 @@ namespace Server.Controllers
         {
             return Ok(_articleService.AddNew(articleDto));
         }
+
         [HttpGet("{id}")]
         [Authorize(Roles ="user")]
         public IActionResult Get(int id)
         {
             return Ok(_articleService.Get(id));
         }
+
         [HttpPut]
         [Authorize(Roles ="prodavac")]
         public IActionResult Put([FromBody] ArticleEditDto article)
         {
             return Ok(_articleService.Edit(article));
         }
+
         [HttpDelete("{id}")]
         [Authorize(Roles = "prodavac")]
         public IActionResult Delete(int id)
         {
             return Ok(_articleService.Delete(id));
         }
+
         [HttpGet]
         [Authorize(Roles ="user")]
         public IActionResult GetAll()
         {
             return Ok(_articleService.GetAll());
         }
+
         [HttpGet("getAllFromUser/{id}")]
         [Authorize(Roles = "prodavac")]
         public IActionResult GetAllForUser(int id)
         {
             return Ok(_articleService.GetAllForUser(id));
         }
+
         [HttpPost("images/{id}")]
+        [Authorize(Roles = "prodavac")]
         public async Task<IActionResult> UploadImage([FromForm] IFormFile image, int id)
         {
             try
@@ -67,6 +74,7 @@ namespace Server.Controllers
                 return BadRequest();
             }
         }
+
         [HttpGet("images/{id}")]
         public IActionResult GetImage(int id)
         {

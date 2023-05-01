@@ -22,7 +22,7 @@ export default function NewOrder(props){
         console.log(resp);
         setElements(resp.data)
         resp.data.forEach(element => {
-            getImage2(element.id);
+            getImage2(element.id,config);
         });
         console.log(elements);
 

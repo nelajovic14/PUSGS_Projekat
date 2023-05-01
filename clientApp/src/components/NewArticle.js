@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from "react";
-import { AddArticle,AddImage,getImage2 } from "../services/ArticleService";
+import { AddArticle,AddImage } from "../services/ArticleService";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import  backImage  from "../img/3893666_81805.jpg";
@@ -96,7 +96,7 @@ export default function NewArticleFunction(props){
                 openDialogBox();
             }
             if(file!=null){
-                const response=AddImage(file,resp.data.id);
+                const response=AddImage(file,resp.data.id,config);
                 console.log(response);
             }
         }
