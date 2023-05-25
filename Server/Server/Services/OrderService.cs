@@ -6,6 +6,7 @@ using Server.Repository.Interfaces;
 using Server.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Server.Services
 {
@@ -15,6 +16,7 @@ namespace Server.Services
         private readonly IUserRepository _userRepository;
         private readonly IArticleRepository _articleRepository;
         private readonly IMapper _mapper;
+        private readonly Mutex mutex = new Mutex();
         public OrderService(IOrderRepository orderRepository,IMapper mapper, IUserRepository userRepository, IArticleRepository articleRepository)
         {
             _orderRepository = orderRepository;
@@ -67,16 +69,24 @@ namespace Server.Services
 
             DateTime now = DateTime.Now;
 
-            foreach(Order o in orders)
+            try
             {
-                o.FinalPrice = orderBack.FinalyPrice;
-                o.DeliveryTime = orderBack.DeliveryTime;
-                o.OrderTime = now;
-                var or = _orderRepository.AddNew(o);
+                mutex.WaitOne();
+                foreach (Order o in orders)
+                {
+                    o.FinalPrice = orderBack.FinalyPrice;
+                    o.DeliveryTime = orderBack.DeliveryTime;
+                    o.OrderTime = now;
+                    var or = _orderRepository.AddNew(o);
+                }
+                foreach (Article article1 in articles)
+                {
+                    _articleRepository.Edit(article1);
+                }
             }
-            foreach(Article article1 in articles)
+            finally
             {
-                _articleRepository.Edit(article1);
+                mutex.ReleaseMutex();
             }
             return orderBack;
            
