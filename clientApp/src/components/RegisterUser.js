@@ -63,8 +63,8 @@ export default function Register(){
         
         e.preventDefault();
         if(validate()){
-
            const values={Username:username,Password:password,NameLastname:Name+"/"+lastname,Email:email,Address:address,TypeOfUser:uloga.current.value,DateOfBirth:dateInputRef.current.value};
+
             const resp= await RegisterUser(values);
             console.log(resp);
             if(resp.data!=''){
@@ -96,9 +96,9 @@ export default function Register(){
         let birtdayError="";
         let emailError="";
         let imageError="";
+        let dateError="";
 
         const validate=()=>{
-            
             if (!username) {
                 usernameError = "Username field is required";
                 setData(usernameError);
@@ -155,7 +155,11 @@ export default function Register(){
 
             var today = new Date();
             var unos=dateInputRef.current.value;
-
+            if(!unos){
+                dateError="Date of birth is required"
+                setData(dateError);
+                openDialogBox();
+            }
             const date1 = new Date(today.getFullYear(), today.getMonth(),today.getDate()); 
             const date2 = new Date(unos.split('-')[0], unos.split('-')[1], unos.split('-')[2]);
 
@@ -166,7 +170,7 @@ export default function Register(){
             }
 
 
-            if (nameError || passwordError || usernameError || lastnameError || birtdayError || emailError || addressError || imageError) {
+            if (nameError || passwordError || usernameError || lastnameError || birtdayError || emailError || addressError || imageError || dateError) {
                 return false;
             }
             return true;
