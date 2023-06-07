@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "cDHUW/2VseWnNrzbj/+vsPn7scJ0PgA4pv8XmW+Isw5C3Aq7HwmYiMBiUKaUx2/CEoZYQS4HiN+1QpgTUgL/wQ==",
+  "dgSpecHash": "huWPftXll/26d96glgUDIR2MkPN9SehAvKM61hvJ/t3HKCKCUYS/a2L+qSi5eGDNqPewRLjrbv/gqlauCmyMjA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Korisnik\\Desktop\\web sa gita\\PUSGS_Projekat\\Server\\Server\\Server.csproj",
+  "projectFilePath": "C:\\Users\\Korisnik\\Desktop\\PUSGS_Projekat\\Server\\Server\\Server.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Korisnik\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\Korisnik\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",

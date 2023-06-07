@@ -205,7 +205,7 @@ namespace Server.Services
         {
             Order order = _orderRepository.Find(id);
             DateTime oT = order.OrderTime.AddHours(1);
-            if (oT >= order.OrderTime)
+            if (oT >= DateTime.Now)
             {
                 List<OrderShowDto> orders = GetAllForUSer(order.UserId);
                 foreach (var o in orders)
