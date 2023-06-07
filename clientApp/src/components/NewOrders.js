@@ -155,7 +155,7 @@ export default function NewOrder(props){
     return(
             <div>
             <div class="container text-center">
-                <div class="alert alert-warning"><strong><h1>Artikli</h1></strong></div>
+                <div class="alert alert-warning"><strong><h1>Articles</h1></strong></div>
                 <table class="table table-bordered">
                     <tr>
                         <td ><b>Name</b></td>
