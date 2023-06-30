@@ -3,6 +3,8 @@ import { GetAllArticles ,getImage2} from "../services/ArticleService";
 import { AddOrder } from "../services/OrderService";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
+import * as ReactDOMClient from 'react-dom/client';
+import ShowArticle from "./ShowArticle";
 
 export default function NewOrder(props){
     const [elements,setElements]=useState([]);
@@ -74,9 +76,6 @@ export default function NewOrder(props){
     const poruci=async (event,element)=>{
        
         event.preventDefault();
-        //const container = document.getElementById('root');
-        //const root = ReactDOMClient.createRoot(container);
-        //root.render(<OrderArticle user={props.user} article={element}></OrderArticle>);
         const config = {
             headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'),}
         };
@@ -116,7 +115,6 @@ export default function NewOrder(props){
             setData("There is no enough of this article!")
             openDialogBox();
         }
-       // handleClose();
     }
 
     const addOnList=(event,element)=>{
@@ -126,6 +124,8 @@ export default function NewOrder(props){
         openDialogBox();
        
     }
+
+
 
     const deletefromList=(event,element)=>{
         event.preventDefault();
@@ -140,11 +140,19 @@ export default function NewOrder(props){
         tableArticles();
     }
 
+    const showArticle=(event,element)=>{
+        event.preventDefault();
+        const container = document.getElementById('root');
+        const root = ReactDOMClient.createRoot(container);
+        root.render(<ShowArticle article={element} user={props.user}/>);
+    }
+
     const elementi=elements.map(element => <tr><td>
         {element.name}</td><td >{element.price}</td><td >
         {element.qunatity}</td><td>{element.description}</td>
         <td><img src={localStorage.getItem('url-article'+element.id)} height={100} width={100} alt="Image"/></td>
-        <td><input type={"button"} class="btn btn-link" onClick={(event)=>addOnList(event,element)}  value={"Poruči"}></input></td>
+        <td><input type={"button"} class="btn btn-link" onClick={(event)=>addOnList(event,element)}  value={"Order"}></input></td>
+        <td><input type={"button"} class="btn btn-link" onClick={(event)=>showArticle(event,element)}  value={"Show"}></input></td>
         </tr>);
 
     const articles=listOfArticles.map(element => <tr><td>
@@ -164,6 +172,7 @@ export default function NewOrder(props){
                         <td><b>Description</b></td>
                         <td><b>Image</b></td>
                         <td><b>Order</b></td>
+                        <td><b>Show Article</b></td>
                         </tr>
                         {elementi}
             </table>

@@ -36,14 +36,8 @@ namespace Server
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddAuthentication().AddFacebook(facebookOptions =>
-            //{
-            //    facebookOptions.AppId = Configuration["FacebookAuthSettings:clientId"];
-            //    facebookOptions.AppSecret = Configuration["FacebookAuthSettings:clientSecret"];
-            //});
             services.AddControllers();
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
@@ -97,10 +91,6 @@ namespace Server
                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]))//navodimo privatni kljuc kojim su potpisani nasi tokeni
                };
            });
-            //.AddFacebook(facebookOptions => {
-            //    facebookOptions.AppId = Configuration["FacebookAuthSettings:clientId"];
-            //    facebookOptions.AppSecret = Configuration["FacebookAuthSettings:clientSecret"];
-            //});
             services.AddCors(options =>
             {
                 options.AddPolicy(name: _cors, builder => {
@@ -119,9 +109,11 @@ namespace Server
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IArticleRepository, ArticleRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
             var mapperConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new MappingProfile());

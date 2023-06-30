@@ -2,11 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using Server.Dto;
 using Server.Models;
+using Server.Repository;
 using Server.Repository.Interfaces;
 using Server.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Server.Services
 {
@@ -17,6 +21,8 @@ namespace Server.Services
         private readonly IArticleRepository _articleRepository;
         private readonly IMapper _mapper;
         private readonly Mutex mutex = new Mutex();
+
+
         public OrderService(IOrderRepository orderRepository,IMapper mapper, IUserRepository userRepository, IArticleRepository articleRepository)
         {
             _orderRepository = orderRepository;
@@ -25,7 +31,9 @@ namespace Server.Services
             _articleRepository = articleRepository;
         }
 
-        public OrderBackDto AddNew(OrderDtoList orderDto)
+        
+
+        public async Task<OrderBackDto> AddNewAsync(OrderDtoList orderDto)
         {
             OrderBackDto orderBack = new OrderBackDto();
             List<Order> orders = new List<Order>();
@@ -77,7 +85,9 @@ namespace Server.Services
                     o.FinalPrice = orderBack.FinalyPrice;
                     o.DeliveryTime = orderBack.DeliveryTime;
                     o.OrderTime = now;
-                    var or = _orderRepository.AddNew(o);
+                    //int sent = await SendData(o);
+                    o.CommentRated = 0;
+                    _orderRepository.AddNewAsync(o);
                 }
                 foreach (Article article1 in articles)
                 {
@@ -213,10 +223,8 @@ namespace Server.Services
                     if (order.UserId == o.UserId && order.OrderTime == o.OrderTime)
                     {
                         Order orderFromdto = _orderRepository.Find(o.Id);
-                        //(o).State = EntityState.Detached;
                         orderFromdto.Customer = _userRepository.FindById(o.UserId);
                         _orderRepository.Decline(orderFromdto);
-                        //ListForDecline.Add(orderFromdto);
                         Article article = _articleRepository.GetArticle(orderFromdto.ArticleId);
                         article.Qunatity += orderFromdto.Quantity;
                         _articleRepository.Edit(article);

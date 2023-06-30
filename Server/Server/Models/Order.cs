@@ -13,6 +13,7 @@ namespace Server.Models
         public double FinalPrice { get; set; }
         public string Address { get; set; }
         public string Comment { get; set; }
+        public int CommentRated { get; set; }
         public User Customer { get; set; }
         public long UserId { get; set; }
         public Article Article { get; set; }

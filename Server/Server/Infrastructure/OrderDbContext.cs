@@ -12,6 +12,7 @@ namespace Server.Infrastructure
         public DbSet<User> Users { get; set; }
         public DbSet<Article> Articles { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<Comment> Comments { get; set; }
         public OrderDbContext(DbContextOptions options) : base(options)
         {
         }

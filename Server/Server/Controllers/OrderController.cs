@@ -17,7 +17,7 @@ namespace Server.Controllers
         }
 
         [HttpPost("add")]
-        [Authorize(Roles ="kupac")]
+        [Authorize(Roles ="user")]
         public IActionResult Add([FromBody]OrderDtoList orderDto)
         {
             if(orderDto == null)
@@ -28,7 +28,7 @@ namespace Server.Controllers
             {
                 return Ok(new OrderBackDto { Id = -1 });
             }
-            return Ok(_orderService.AddNew(orderDto));
+            return Ok(_orderService.AddNewAsync(orderDto));
         }     
 
         [HttpGet("getForCustmer/{id}")]

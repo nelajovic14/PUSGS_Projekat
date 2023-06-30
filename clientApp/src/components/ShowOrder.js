@@ -3,6 +3,7 @@ import {GetOrdersToShow } from "../services/OrderService";
 import { getImage2 } from "../services/ArticleService";
 import * as ReactDOMClient from 'react-dom/client';
 import MainPage from "./MainPage"
+import ArticleReview from "./LeavCommentOnArticle";
 
 export default function ShowOrder(props){
     const [articles,setArticles]=useState([]);
@@ -51,11 +52,19 @@ export default function ShowOrder(props){
         root.render(<MainPage user={props.user}></MainPage>)
     }
 
-
+    const showArticle=(event,element)=>{
+        
+        event.preventDefault();
+        const container = document.getElementById('root');
+        const root = ReactDOMClient.createRoot(container);
+        root.render(<ArticleReview user={props.user} article={element} order={props.order}></ArticleReview>);
+       
+    }
 
     const elementi=articles.map(element => <tr><td>
         {element.name}</td><td >{element.price}</td> <td>{element.qunatity}</td> <td> <span>{(element.qunatity+0)*(element.price+0)}</span></td><td>{element.description}</td>
         <td><img src={localStorage.getItem('url-article'+element.id)} height={100} width={100} alt="Image"/></td>
+        <td><input type={"button"} class="btn btn-link" onClick={(event)=>showArticle(event,element)}  value={"Show Article"}/></td>
         </tr>);
 
     return(
@@ -75,6 +84,7 @@ export default function ShowOrder(props){
                         <td><b>Sum</b></td>
                         <td><b>Description</b></td>
                         <td><b>Image</b></td>
+                        <td><b>Show Article</b></td>
                         </tr>
                         {elementi}
             </table>

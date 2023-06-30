@@ -2,6 +2,7 @@
 using Server.Models;
 using Server.Repository.Interfaces;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Server.Repository
 {
@@ -17,8 +18,13 @@ namespace Server.Repository
         {
             _orderDbContext.Orders.Add(order);
             _orderDbContext.SaveChanges();
-            
+
             return order;
+        }
+
+        public async Task<Order> FindAsync(long id)
+        {
+            return await _orderDbContext.Orders.FindAsync(id);
         }
 
         public Order Decline(Order order)
@@ -27,6 +33,13 @@ namespace Server.Repository
             _orderDbContext.Orders.Update(order);
             _orderDbContext.SaveChanges();
             return order;
+        }
+
+        public Order EditOrderAddCommentRated(Order o)
+        {
+            _orderDbContext.Orders.Update(o);
+            _orderDbContext.SaveChanges();
+            return o;
         }
 
         public Order Find(long id)
@@ -58,6 +71,13 @@ namespace Server.Repository
                 }
             }
             return orders;
+        }
+
+        public async Task AddNewAsync(Order order)
+        {
+            _orderDbContext.Orders.Add(order);
+            _orderDbContext.SaveChanges();
+
         }
     }
 }

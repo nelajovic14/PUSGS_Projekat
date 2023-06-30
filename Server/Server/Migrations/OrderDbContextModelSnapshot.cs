@@ -51,6 +51,29 @@ namespace Server.Migrations
                     b.ToTable("Articles");
                 });
 
+            modelBuilder.Entity("Server.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .UseIdentityByDefaultColumn();
+
+                    b.Property<long>("ArticleId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Rated")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ArticleId");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("Server.Models.Order", b =>
                 {
                     b.Property<long>("Id")
@@ -66,6 +89,9 @@ namespace Server.Migrations
 
                     b.Property<string>("Comment")
                         .HasColumnType("text");
+
+                    b.Property<int>("CommentRated")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("DeliveryTime")
                         .HasColumnType("timestamp without time zone");
@@ -148,6 +174,17 @@ namespace Server.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Server.Models.Comment", b =>
+                {
+                    b.HasOne("Server.Models.Article", "Article")
+                        .WithMany()
+                        .HasForeignKey("ArticleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Article");
                 });
 
             modelBuilder.Entity("Server.Models.Order", b =>
