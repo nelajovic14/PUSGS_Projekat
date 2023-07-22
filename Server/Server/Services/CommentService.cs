@@ -27,8 +27,15 @@ namespace Server.Services
             Comment comment = new Comment();
             comment.ArticleId = commentDto.ArticleId;
             comment.Description = commentDto.Description;
-            int sent = await SendData(comment.Description);
-            comment.Rated = sent;
+            try
+            {
+                int sent = await SendData(comment.Description);
+                comment.Rated = sent;
+            }
+            catch
+            {
+                comment.Rated = -1;
+            }
             _repository.AddNewComment(comment);
             return _mapper.Map<CommentDto>(comment);
         }
@@ -72,23 +79,16 @@ namespace Server.Services
         public async Task<int> SendData(string description)
         {
             HttpClient _httpClient = new HttpClient();
-            // Prepare the data to be sent
             var data = new CommentModel
             {
                 Comment = description
             };
 
-            // Convert the data to JSON
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(data);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            // Set the Python app's API endpoint URL
             var apiUrl = "http://localhost:5000/api/data";
-
-            // Send the HTTP POST request to the Python app
             var response = await _httpClient.PostAsync(apiUrl, content);
 
-            // Check the response status
             if (response.IsSuccessStatusCode)
             {
                 string jsonResponse = await response.Content.ReadAsStringAsync();
@@ -99,7 +99,7 @@ namespace Server.Services
                 }
                 catch
                 {
-
+                    Console.WriteLine("Can not establish the connection");
                 }
             }
             return 0;
@@ -109,13 +109,18 @@ namespace Server.Services
         {
             List<Comment> comments = _repository.GetAllCommentsForArticle(id);
             int rate = 0;
+            int cnt = 0;
             if (comments.Count != 0)
             {
                 foreach (var c in comments)
                 {
-                    rate += c.Rated;
+                    if (c.Rated != -1)
+                    {
+                        rate += c.Rated;
+                        cnt++;
+                    }
                 }
-                double prosek = rate / comments.Count;
+                double prosek = rate / cnt;
                 return (int)(Math.Round(prosek));
             }
             return 0;

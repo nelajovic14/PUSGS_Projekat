@@ -20,6 +20,7 @@ export const GetNewUserOrders = async(id,config)=>{
     return await axios.get(`${process.env.REACT_APP_API_URL}/api/order/getForUserNew/${id}`,config);
 }
 
+
 export const AddOrder = async(Order,config)=>{
     return await axios.post(`${process.env.REACT_APP_API_URL}/api/order/add`,Order,config);
 }

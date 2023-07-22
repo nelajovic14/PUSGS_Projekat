@@ -1,9 +1,6 @@
 ﻿
 using FacebookCore;
 using Google.Apis.Auth;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Auth.OAuth2.Flows;
-using Google.Apis.Auth.OAuth2.Responses;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using Server.Dto;

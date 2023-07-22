@@ -23,7 +23,6 @@ export default function EditArticleFunction(props){
     useEffect (()=>{
 
         const resp=getImage2(props.article.id,config);
-        //console.log(resp);
        setImageUrl(localStorage.getItem('url-article'+props.article.id));
        
     },[]);
@@ -56,29 +55,29 @@ export default function EditArticleFunction(props){
     const validate=()=>{
         var valid=true;
         if (naziv=='') {
-            setData("You have to type name of article!");
+            setData("Obavezno unesi naziv proizvoda!");
             openDialogBox();
             valid=false;
         }
         
         else if (opis=='') {
-            setData("You have to type description of article!");
+            setData("Opis ptoizvoda je obavezan!");
             openDialogBox();
             valid=false;
         }
 
         else if (kolicina==0) {
-            setData("Can not have 0 articles");
+            setData("Ne možeš prodavati proizvod kojeg nemaš na stanju!");
             openDialogBox();
             valid=false;
         }
         if (cena<0) {
-            setData("Price is positiv number");
+            setData("Cena mora biti pozitivan broj!");
             openDialogBox();
             valid=false;
         }
         else if(!imageUrl){
-            let imageError = "Image is required";
+            let imageError = "Slika je obavezna!";
             setData(imageError);
             openDialogBox();
             valid=false;
@@ -94,11 +93,11 @@ export default function EditArticleFunction(props){
             const resp=await EditArticle(Article,config);
             console.log(resp);
             if(resp.data!=""){
-                setData("successfully edit article!")
+                setData("Proizvod je uspešno izmenjen!")
                 openDialogBox();
             }
             else{
-                setData("Something is wrong, you can not edit article!")
+                setData("Nije moguće izmeniti proizvod!")
                 openDialogBox();
             }
             if(file!=null){
@@ -106,8 +105,7 @@ export default function EditArticleFunction(props){
                 console.log(response);
                     if((await response).status==200){
                         getImage2(props.article.id,config);
-                        //setImageUrl(localStorage.getItem('url'+props.user.id));
-                        setData("Well done.You changed your data!")
+                        setData("Uspešno ste izmenili proizvod!")
                         openDialogBox();
                     }
             }
@@ -127,7 +125,6 @@ export default function EditArticleFunction(props){
         setImageUrl(file);
         const formData = new FormData();
         formData.append("image", file);
-        // send formData to the server
         setFile(formData);
         setImageUrl(URL.createObjectURL(file));
       }
@@ -135,19 +132,19 @@ export default function EditArticleFunction(props){
 
     return(
         <div class="container text-center">
-            <div class="alert alert-warning"><strong><h1>EDIT ARTICLE</h1></strong></div>
+            <div class="alert alert-warning"><strong><h1>IZMENI PROIZVOD</h1></strong></div>
             <form onSubmit={edit}>
-               Name : <input  type={"text"} name="naziv" value={naziv} onChange={handleInputChanges}/><br/><br/>
-               Price : <input  type={"number"} name="cena" value={cena} onChange={handleInputChanges}/><br/><br/>
-               Quantity : <input  type={"number"} name="kolicina" value={kolicina} onChange={handleInputChanges}/><br/><br/>
-               Description : <input  type={"text"} name="opis" value={opis} onChange={handleInputChanges}/><br/><br/>
-               Image: <div><input type={"file"} onChange={handleFileSelect}  /></div><br/>
+               Naziv : <input  type={"text"} name="naziv" value={naziv} onChange={handleInputChanges}/><br/><br/>
+               Cena : <input  type={"number"} name="cena" value={cena} onChange={handleInputChanges}/><br/><br/>
+               Količina : <input  type={"number"} name="kolicina" value={kolicina} onChange={handleInputChanges}/><br/><br/>
+               Opis : <input  type={"text"} name="opis" value={opis} onChange={handleInputChanges}/><br/><br/>
+               Slika : <div><input type={"file"} onChange={handleFileSelect}  /></div><br/>
             
             <img src={imageUrl} height={300} width={300} alt="Image"/><br/><br/>
                <input type={"submit"} name='edit' value={"Edit"} onChange={handleInputChanges} class="btn btn-warning"/><br/>
             </form><br/>
             <Dialog onClose = {handleClose} open = {openDialog}>
-            <div class="p-5 text-center bg-image rounded-3" style={{ backgroundImage: `url(${backImage})`}}>
+            <div class="p-5 text-center bg-image rounded-3" style={{ backgroundColor: "tomato"}}>
             <div class="mask">
                 <div class="d-flex justify-content-center align-items-center h-100">
                 <div class="text-black">
@@ -157,7 +154,7 @@ export default function EditArticleFunction(props){
             </div>
             </div>
          </Dialog>
-         <input type={"submit"} name='back' value={"Back"} onClick={back} class="btn btn-warning"/><br/>
+         <input type={"submit"} name='back' value={"Nazad"} onClick={back} class="btn btn-warning"/><br/>
         </div>
     )
 }

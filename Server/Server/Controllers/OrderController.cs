@@ -24,7 +24,7 @@ namespace Server.Controllers
             {
                 return Ok(new OrderBackDto { Id = -1 });
             }
-            if(orderDto.Address=="" || orderDto.Comment == "" || orderDto.Articles.Count==0)
+            if(orderDto.Address=="" ||orderDto.Articles.Count==0)
             {
                 return Ok(new OrderBackDto { Id = -1 });
             }

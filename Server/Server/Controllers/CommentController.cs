@@ -18,7 +18,7 @@ namespace Server.Controllers
         }
 
         [HttpPost("add")]
-        [Authorize(Roles = "user")]
+        [Authorize(Roles = "kupac")]
         public IActionResult AddComment([FromBody] CommentDto comment)
         {
            

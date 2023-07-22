@@ -18,13 +18,13 @@ const LayoutAdmin = () => {
         <ul  class="list-inline">
          
           <li>
-            <Link to="/EditInformation">Edit</Link>
+            <Link to="/EditInformation" ><label style={{fontSize:20, fontFamily: "Lucida console, Courier New"}}>Izmeni profil &nbsp;</label></Link>
           </li>
           <li >
-            <Link to="/AllOrders">Orders</Link>
+            <Link to="/AllOrders"><label style={{fontSize:20, fontFamily: "Lucida console, Courier New"}}>Porudžbine &nbsp;</label></Link>
           </li>
           <li>
-            <Link to="/Users">Requests</Link>
+            <Link to="/Users"><label style={{fontSize:20, fontFamily: "Lucida console, Courier New"}}>Zahtevi za registraciju &nbsp;</label></Link>
           </li>
         </ul></div>
       </nav>

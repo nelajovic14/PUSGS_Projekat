@@ -34,14 +34,11 @@ export default function EditUser(props){
     const fillFields=async (e)=>{
         const response=await GetUser(props.user.id,config);
         const user=response.data;
-        console.log(user);
         setUsername(user.username);
         
         setAddress(user.address);
         setEmail(user.email);
         setId(user.id);
-        console.log(user.dateOfBirth);
-        console.log();
         var date=(user.dateOfBirth+"").split('T')[0];
         setDateOfBirth(date);
         const names=user.nameLastname+"";
@@ -51,8 +48,6 @@ export default function EditUser(props){
         setLastname(words[1]);
 
         setImageUrl(localStorage.getItem('url'+props.user.id));
-        console.log("image")
-        console.log(localStorage.getItem('url'+props.user.id))
     }
 
    
@@ -62,7 +57,6 @@ export default function EditUser(props){
         setImageUrl(file);
         const formData = new FormData();
         formData.append("image", file);
-        // send formData to the server
         setImageUrl(URL.createObjectURL(file));
         setFile(formData);
       }
@@ -114,36 +108,36 @@ export default function EditUser(props){
         const validate=()=>{
             
             if (!username) {
-                usernameError = "Username field is required";
+                usernameError = "Korisničko ime je obavezno polje!";
                 setData(usernameError);
                 openDialogBox();
             }
             else if (!Name) {
-                nameError = "Name field is required";
+                nameError = "Ime je obavezno polje!";
                 setData(nameError);
                 openDialogBox();
             }
 
             else if (!lastname) {
-                lastnameError = "Lastname field is required";
+                lastnameError = "Prezime je obavezno polje!";
                 setData(lastnameError);
                 openDialogBox();
             }
 
             else if (!email) {
-                emailError = "Email field is required";
+                emailError = "Mejl adresa je obavezno polje!";
                 setData(emailError);
                 openDialogBox();
             }
 
             else if (!address) {
-                addressError = "Address field is required";
+                addressError = "Adresa je obavezno polje!";
                 setData(addressError);
                 openDialogBox();
             }
 
             else if(!imageUrl){
-                imageError = "Image is required";
+                imageError = "Slika je obavezno polje!";
                 setData(imageError);
                 openDialogBox();
             }
@@ -160,21 +154,19 @@ export default function EditUser(props){
                 const EditUserDto={Id:id,Username:username,Password:password,NameLastname:Name+"/"+lastname,Email:email,Address:address,DateOfBirth:dateOfBirth,typeOfUser:props.user.typeOfUser} 
                 const resp2=await EditUserPut(EditUserDto,config);
                 if(resp2==''){
-                    setData("Can not change data!")
+                    setData("Zahtev za izmenu podataka nije prihvaćen!")
                     openDialogBox();
                 }
                 else{
-                    setData("You changed your data!")
-                    //openDialogBox();
+                    setData("Uspešno ste promenili podatke o sebi!")
+                    openDialogBox();
                 }
                 if(file!=null){
                     const respImg=AddImage(file,props.user.id);
                     
-                    console.log(respImg);
                     if((await respImg).status==200){
                         getImage2(props.user.id);
-                        //setImageUrl(localStorage.getItem('url'+props.user.id));
-                        setData("Well done.You changed your data!")
+                        setData("Uspešno ste promenili podatke o sebi!")
                         openDialogBox();
                     }
                 }
@@ -183,33 +175,33 @@ export default function EditUser(props){
 
     return(
         <div class="jumbotron text-center">
-            <h3>Change information about you : </h3><br/>
-        <form onSubmit={editovanje}>                                  
-            Username : <input type={"text"} name='username' value={username} onChange={handleInputChanges}  ></input><br/><br/>
+            <h3>Podaci o Vama na profilu</h3><br/>
+        <form onSubmit={editovanje} >                                  
+            Korisničko ime : <input type={"text"} name='username' value={username} onChange={handleInputChanges}  ></input><br/><br/>
             
-            Password: <input type={"password"} name='password' value={password} onChange={handleInputChanges}></input><br/><br/>
+            Lozinka : <input type={"password"} name='password' value={password} onChange={handleInputChanges}></input><br/><br/>
             
-            Name : <input type={"text"} name='name' value={Name} onChange={handleInputChanges}  ></input><br/><br/>
+            Ime : <input type={"text"} name='name' value={Name} onChange={handleInputChanges}  ></input><br/><br/>
 
-            Lastname : <input type={"text"} name='lastname' value={lastname} onChange={handleInputChanges}  ></input><br/><br/>
+            Prezime : <input type={"text"} name='lastname' value={lastname} onChange={handleInputChanges}  ></input><br/><br/>
 
-            Email : <input type={"text"} name='email' value={email} onChange={handleInputChanges}  ></input><br/><br/>
+            Mejl adresa : <input type={"text"} name='email' value={email} onChange={handleInputChanges}  ></input><br/><br/>
 
-            Date of Birth : <input type={"date"} name="dateOfBirth"  data-date-format="MM/DD/YYYY" value={dateOfBirth} onChange={handleInputChanges}></input><br/><br/>
+            Datum rođenja : <input type={"date"} name="dateOfBirth"  data-date-format="MM/DD/YYYY" value={dateOfBirth} onChange={handleInputChanges}></input><br/><br/>
 
-            Address : <input type={"text"} name="address" value={address} onChange={handleInputChanges} ></input><br/><br/>
-            Image:
-            <div style={{'marginLeft':'600px'}}><input type={"file"} onChange={handleFileSelect}  /></div><br/>
+            Adresa : <input type={"text"} name="address" value={address} onChange={handleInputChanges} ></input><br/><br/>
+            Slika:
+            <div style={{'marginLeft':'700px'}}><input type={"file"} onChange={handleFileSelect} /></div><br/>
             
             <img src={imageUrl} height={300} width={300} alt="Image"/>
             
             <br/><br/>
-        <input type={"submit"} name='promeni' value={"Change"} ></input><br/>
+        <input type={"submit"} name='promeni' value={"Izmeni"} ></input><br/>
 
     </form><br/>
     <Dialog onClose = {handleClose} open = {openDialog}>
-    <DialogTitle> Edit information </DialogTitle>
-            <div class="p-5 text-center bg-image rounded-3" style={{ backgroundImage: `url(${backImage})`}}>
+    <DialogTitle> Izmena </DialogTitle>
+            <div class="p-5 text-center bg-image rounded-3" style={{ backgroundColor: "tomato"}}>
             <div class="mask">
                 <div class="d-flex justify-content-center align-items-center h-100">
                 <div class="text-black">

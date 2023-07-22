@@ -1,7 +1,5 @@
 from functionsSentAna import rate_the_comment
 import pickle
-
-
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)

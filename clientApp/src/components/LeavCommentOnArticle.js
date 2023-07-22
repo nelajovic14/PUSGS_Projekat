@@ -54,8 +54,20 @@ export default function ArticleReview(props){
 
     const validate=()=>{
         if(comment==''){
-            let commentError = "You can not leave empty comment!";
+            let commentError = "Morate uneti komentar ukoliko želite da ga pošaljete!";
             setData(commentError);
+            openDialogBox();
+            return false;
+        }
+        const date1 = new Date(); 
+        console.log(date1);
+        var dateOrder=props.order.toString();
+        console.log(dateOrder);
+        const date2 = new Date(dateOrder.split('-')[0],dateOrder.split('-')[1]-1,dateOrder.split('-')[2].split(' ')[0],dateOrder.split(':')[0].split(' ')[2],dateOrder.split(':')[1],dateOrder.split(':')[2]);
+        console.log(date2);
+
+        if(date1<=date2){
+            setData("Ne možeš komentarisati proizvod pre vremena isporuke!");
             openDialogBox();
             return false;
         }
@@ -65,13 +77,14 @@ export default function ArticleReview(props){
     const LeaveComment=async e=>{
         e.preventDefault();
         if(validate()){
+            
             const config = {
                 headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'+props.user.id),}
             };
             const commentObj={description:comment,articleId:props.article.id};
             const resp=await AddComment(commentObj,config); 
            if(resp.status==200){
-            setData("You sent a comment!");
+            setData("Komentar je uspešno objavljen!");
             openDialogBox();
            }
         }
@@ -79,20 +92,20 @@ export default function ArticleReview(props){
 
     return(
         <div class="container text-center">
-            <div class="alert alert-warning"><strong><h1>ARTICLE</h1></strong></div>
-               Name : <label><b>{naziv}</b></label><br/><br/>
-               Price : <label><b>{cena}</b></label><br/><br/>
-               Quantity : <label><b>{kolicina}</b></label><br/><br/>
-               Description : <label><b>{opis}</b></label><br/><br/>
+            <div class="alert alert-warning"><strong><h1>PREGLED PROIZVODA</h1></strong></div>
+               Naziv : <label><b>{naziv}</b></label> &nbsp; &nbsp; &nbsp; &nbsp;
+               Cena : <label><b>{cena}</b></label>&nbsp; &nbsp; &nbsp; &nbsp;
+               Količina : <label><b>{kolicina}</b></label>&nbsp;&nbsp; &nbsp; &nbsp;
+               Opis : <label><b>{opis}</b></label><br/>
             
             <img src={imageUrl} height={300} width={300} alt="Image"/><br/><br/>
-            <br/>
+
             <form onSubmit={LeaveComment}>
-            Comment : <input  type={"text"} name="commentFromUser" value={comment} onChange={handleInputChanges}/><br/><br/>
-            <input type={"submit"} name='comm' value={"Leave comment"} class="btn btn-danger"/><br/><br/><br/>
+            Komentar : <input  type={"text"} name="commentFromUser" value={comment} onChange={handleInputChanges}/><br/><br/>
+            <input type={"submit"} name='comm' value={"ostavite komentar"} class="btn btn-danger"/><br/><br/>
             </form>
             <Dialog onClose = {handleClose} open = {openDialog}>
-            <div class="p-5 text-center bg-image rounded-3" style={{ backgroundImage: `url(${backImage})`}}>
+            <div class="p-5 text-center bg-image rounded-3" style={{ backgroundColor: "tomato"}}>
             <div class="mask">
                 <div class="d-flex justify-content-center align-items-center h-100">
                 <div class="text-black">
@@ -102,7 +115,7 @@ export default function ArticleReview(props){
             </div>
             </div>
          </Dialog>
-         <input type={"submit"} name='back' value={"Back"} onClick={back} class="btn btn-warning"/><br/>
+         <input type={"submit"} name='back' value={"Nazad"} onClick={back} class="btn btn-warning"/><br/>
         </div>
     )
 }

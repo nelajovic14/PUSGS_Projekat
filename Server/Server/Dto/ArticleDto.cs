@@ -4,7 +4,6 @@ namespace Server.Dto
 {
     public class ArticleDto
     {
-        //public long Id { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]
@@ -16,6 +15,5 @@ namespace Server.Dto
         public string Image { get; set; }
         [Required]
         public long UserId { get;set; }
-        //public UserDto User { get;set; }
     }
 }

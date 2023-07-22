@@ -18,19 +18,19 @@ const LayoutProdavac = () => {
         <ul  class="list-inline">
          
           <li>
-            <Link to="/EditInformation">Edit</Link>
+            <Link to="/EditInformation"><label style={{fontSize:20, fontFamily: "Lucida console, Courier New"}}>Izmeni profil &nbsp;</label></Link>
           </li>
           <li>
-            <Link to="/MyArticles">My Articles</Link>
+            <Link to="/MyArticles"><label style={{fontSize:20, fontFamily: "Lucida console, Courier New"}}>Moji proizvodi &nbsp;</label></Link>
           </li>
           <li>
-            <Link to="/NewOrdersUser">New Orders</Link>
+            <Link to="/NewOrdersUser"><label style={{fontSize:20, fontFamily: "Lucida console, Courier New"}}>Nove porudžbine &nbsp;</label></Link>
           </li>
           <li>
-            <Link to="/OldOrdersUser">Old Orders</Link>
+            <Link to="/OldOrdersUser"><label style={{fontSize:20, fontFamily: "Lucida console, Courier New"}}>Stare porudžbine &nbsp;</label></Link>
           </li>
           <li>
-            <Link to="/AddNew">New Article</Link>
+            <Link to="/AddNew"><label style={{fontSize:20, fontFamily: "Lucida console, Courier New"}}>Dodaj novi proizvod</label></Link>
           </li>
         </ul></div>
       </nav>

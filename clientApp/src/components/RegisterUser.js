@@ -69,16 +69,16 @@ export default function Register(){
             console.log(resp);
             if(resp.data!=''){
                 if(uloga.current.value=="PRODAVAC"){
-                    setData("You send a request for registration!")
+                    setData("Vaš zahtev za registraciju je uspešno poslat!")
                     openDialogBox();
                 }
                 else{
-                    setData("You are registrated!")
+                    setData("Čestitamo, uspešno ste registrovani!")
                     openDialogBox();
                 }
             }
             else{
-                setData("Person with this username or email already exists!")
+                setData("Osoba sa tim korisničkim imenom ili mejlom već postoji!")
                 openDialogBox();
             }
             if(file!=null){
@@ -100,55 +100,55 @@ export default function Register(){
 
         const validate=()=>{
             if (!username) {
-                usernameError = "Username field is required";
+                usernameError = "Korisničko ime je obavezno!";
                 setData(usernameError);
                 openDialogBox();
             }
             
             else if (!password) {
-                passwordError = "Password field is required";
+                passwordError = "Lozinka je obavezna!";
                 setData(passwordError);
                 openDialogBox();
             }
 
             else if(!password2){
-                passwordError = "Repeat password please!";
+                passwordError = "Molimo Vas, ponovite Vašu lozinku još jednom!";
                 setData(passwordError);
                 openDialogBox();
             }
 
             else if(password!=password2){
-                passwordError = "You didnt repeat password well!";
+                passwordError = "Niste dobro ponovili lozinku!";
                 setData(passwordError);
                 openDialogBox();
             }
 
             else if (!Name) {
-                nameError = "Name field is required";
+                nameError = "Molimo Vas unesite Vaše ime!";
                 setData(nameError);
                 openDialogBox();
             }
 
             else if (!lastname) {
-                lastnameError = "Lastname field is required";
+                lastnameError = "Molimo Vas unesite Vaše prezime!";
                 setData(lastnameError);
                 openDialogBox();
             }
 
             else if (!email) {
-                emailError = "Email field is required";
+                emailError = "Mejl adresu je obavezno uneti!";
                 setData(emailError);
                 openDialogBox();
             }
 
             else if (!address) {
-                addressError = "Address field is required";
+                addressError = "Polje za adresu je obavezno!";
                 setData(addressError);
                 openDialogBox();
             }
 
             else if(!imageUrl){
-                imageError = "Image is required";
+                imageError = "Slika korisnika je obavezna!";
                 setData(imageError);
                 openDialogBox();
             }
@@ -156,7 +156,7 @@ export default function Register(){
             var today = new Date();
             var unos=dateInputRef.current.value;
             if(!unos){
-                dateError="Date of birth is required"
+                dateError="Potrebno je uneti datum rođenja!"
                 setData(dateError);
                 openDialogBox();
             }
@@ -164,7 +164,7 @@ export default function Register(){
             const date2 = new Date(unos.split('-')[0], unos.split('-')[1], unos.split('-')[2]);
 
             if(date1<=date2){
-                setData("Can not be born in the future! Please change date field");
+                setData("Datum rođenja je u budućnosti, molimo Vas promenite!");
                 openDialogBox();
                 return false;
             }
@@ -181,47 +181,45 @@ export default function Register(){
             setImageUrl(file);
             const formData = new FormData();
             formData.append("image", file);
-            // send formData to the server
             setFile(formData);
             setImageUrl(file)
           }
 
     return(
         <div class="jumbotron text-center">
-            <h3 class="bg-info">Register new user:</h3><br/><br/>
+            <h3 class="bg-info">Forma za registraciju</h3><br/><br/>
         <form onSubmit={register}> 
-            Username : <input type={"text"} name='username' value={username} onChange={handleInputChanges}  ></input><br/><br/>
+            Korisničko ime : <input type={"text"} name='username' value={username} onChange={handleInputChanges}  ></input><br/><br/>
             
-            Password: <input type={"password"} name='password' value={password} onChange={handleInputChanges}></input><br/><br/>
+            Lozinka: <input type={"password"} name='password' value={password} onChange={handleInputChanges}></input><br/><br/>
             
-            Password: <input type={"password"} name='password2' value={password2} onChange={handleInputChanges}></input><br/><br/>
+            Lozinka (ponovite): <input type={"password"} name='password2' value={password2} onChange={handleInputChanges}></input><br/><br/>
 
+            Ime : <input type={"text"} name='name' value={Name} onChange={handleInputChanges}  ></input><br/><br/>
 
-            Name : <input type={"text"} name='name' value={Name} onChange={handleInputChanges}  ></input><br/><br/>
+            Prezime : <input type={"text"} name='lastname' value={lastname} onChange={handleInputChanges}  ></input><br/><br/>
 
-            Lastname : <input type={"text"} name='lastname' value={lastname} onChange={handleInputChanges}  ></input><br/><br/>
+            Mejl adresa : <input type="email" name='email' value={email} onChange={handleInputChanges}  ></input><br/><br/>
 
-            Email : <input type="email" name='email' value={email} onChange={handleInputChanges}  ></input><br/><br/>
+            Datum rođenja : <input type={"date"} name="date" ref={dateInputRef}></input><br/><br/>
 
-            Date of Birth : <input type={"date"} name="date" ref={dateInputRef}></input><br/><br/>
+            Adresa : <input type={"text"} name="address" value={address} onChange={handleInputChanges} ></input><br/><br/>
 
-            Address : <input type={"text"} name="address" value={address} onChange={handleInputChanges} ></input><br/><br/>
-
-            Role : <select ref={uloga} >
+            Uloga : <select ref={uloga} >
                 <option value={'KUPAC'}>KUPAC</option>
                 <option value={'PRODAVAC'}>PRODAVAC</option>
             </select><br/><br/>
 
-            Image: <input type="file" onChange={handleFileSelect} />
+            Slika : <input type="file" onChange={handleFileSelect} />
             {imageUrl && <img src={URL.createObjectURL(imageUrl)} height={300} width={300} />}<br/><br/>
-            <input type={"submit"} name='registruj' value={"Register"} onChange={handleInputChanges}></input><br/>
+            <input type={"submit"} name='registruj' value={"Registruj se"} onChange={handleInputChanges} class="btn btn-primary"></input><br/>
         </form>
         <br/>
 
 
         <Dialog onClose = {handleClose} open = {openDialog}>
-            <DialogTitle> Registration </DialogTitle>
-            <div class="p-5 text-center bg-image rounded-3" style={{ backgroundImage: `url(${backImage})`}}>
+            <DialogTitle> Registracija </DialogTitle>
+            <div class="p-5 text-center bg-image rounded-3" style={{ backgroundColor: "tomato"}}>
             <div class="mask">
                 <div class="d-flex justify-content-center align-items-center h-100">
                 <div class="text-black">

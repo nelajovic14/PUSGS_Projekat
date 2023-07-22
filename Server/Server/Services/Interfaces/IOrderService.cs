@@ -15,6 +15,5 @@ namespace Server.Services.Interfaces
         List<OrderShowDto> GetForSpecialUserNew(int id);
         bool Decline(long id);
         OrderShowDto GetToShowOrder(long id);
-        //Task<int> SendData(Order order);
     }
 }

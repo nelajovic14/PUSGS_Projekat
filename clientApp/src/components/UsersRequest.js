@@ -27,7 +27,6 @@ export default function UserRequest(props){
         }
     }
 
-
     useEffect(() =>{
         getUsers();
 
@@ -67,33 +66,31 @@ export default function UserRequest(props){
     const elementi=users.map(element => <tr><td>
         {element.username}</td><td >{element.email}</td><td >
         {element.dateOfBirth}</td><td>{element.address}</td>
-        <td>{element.image}</td>
-        <td><input type={"button"} class="btn btn-link" onClick={(e)=>odobri(e,element)}  value={"Confirm"}></input></td>
-        <td><input type={"button"} class="btn btn-link" onClick={(e)=>odbij(e,element)}  value={"Decline"}></input></td>
+        <td><input type={"button"} class="btn btn-link" onClick={(e)=>odobri(e,element)}  value={"Odobri"}></input></td>
+        <td><input type={"button"} class="btn btn-link" onClick={(e)=>odbij(e,element)}  value={"Odbij"}></input></td>
         </tr>);
 
     return(
         <div>
             <div class="container text-center">
-                <div class="alert alert-warning"><strong><h1>Users</h1></strong></div>
+                <div class="alert alert-warning"><strong><h1>Korisnici koji su poslali zahtev : </h1></strong></div>
                 <table class="table table-bordered">
                     <tr>
-                        <td ><b>Username</b></td>
-                        <td><b>Email</b></td>
-                        <td ><b>Date of birth</b></td>
-                        <td><b>Address</b></td>
-                        <td><b>Image</b></td>
-                        <td><b>Confirm</b></td>
-                        <td><b>Decline</b></td>
+                        <td ><b>Korisničko ime</b></td>
+                        <td><b>Mejl adresa</b></td>
+                        <td ><b>Datum rođenja</b></td>
+                        <td><b>Adresa</b></td>
+                        <td><b>Prihvati</b></td>
+                        <td><b>Odbij</b></td>
                         </tr>
                         {elementi}
             </table></div>
             <Dialog onClose = {handleClose} open = {openDialog}>
-            <div class="p-5 text-center bg-image rounded-3" >
+            <div class="p-5 text-center bg-image rounded-3"  style={{ backgroundColor: "tomato"}}>
             <div class="mask">
                 <div class="d-flex justify-content-center align-items-center h-100">
                 <div class="text-black">
-                    <h4 class="mb-3">You can not verficate this user!</h4>
+                    <h4 class="mb-3">Niste uspeli da verifikujete korisnika!</h4>
                 </div>
                 </div>
             </div>

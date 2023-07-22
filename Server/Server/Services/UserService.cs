@@ -69,37 +69,7 @@ namespace Server.Services
             User u=_userRepository.Add(user);
             return new UserEditDto {Username=u.Username, Address = u.Address, DateOfBirth = u.DateOfBirth, Email = u.Email, NameLastname = u.NameLastname, UserImage = u.UserImage, Password = u.Password, TypeOfUser = u.TypeOfUser.ToString(), Id=u.Id };
         }
-        public InfoFromFacebook VerifyFacebookTokenAsync(ExternalRegister externalLogin)
-        {
-            string[] userInfo = { "id", "name", "email", "first_name", "last_name" };
-            if (string.IsNullOrEmpty(externalLogin.IdToken))
-            {
-                return null;
-            }
-            FacebookClient client = new FacebookClient(_facebookSettings.GetSection("clientId").Value,
-                                                       _facebookSettings.GetSection("clientSecret").Value);
-            //try
-            //{
-            //    FacebookUserApi api = client.GetUserApi(externalLogin.IdToken);
-            //    JObject info =  api.RequestInformationAsync(userInfo);
-            //    if (info == null)
-            //        return null;
-            //    InfoFromFacebook fbInfo = new InfoFromFacebook()
-            //    {
-            //        ID = (string)info["id"],
-            //        Name = (string)info["first_name"],
-            //        LastName = (string)info["last_name"],
-            //        Email = (string)info["email"],
 
-            //    };
-            //    return fbInfo;
-            //}
-            //catch
-            //{
-            //    return null;
-            //}
-            return null;
-        }
         
         public UserEditDto Edit(UserEditDto dto)
         {
@@ -162,12 +132,12 @@ namespace Server.Services
                 return null;
             if (user.Verificated == true)
             {
-                if (BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))//Uporedjujemo hes pasvorda iz baze i unetog pasvorda
+                if (BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
                 {
                     List<Claim> claims = new List<Claim>();
 
                     if (user.TypeOfUser == Enums.UserType.ADMINISTRATOR)
-                        claims.Add(new Claim(ClaimTypes.Role, "admin")); //Add user type to claim
+                        claims.Add(new Claim(ClaimTypes.Role, "admin")); 
                     else if (user.TypeOfUser == Enums.UserType.PRODAVAC)
                         claims.Add(new Claim(ClaimTypes.Role, "prodavac"));
                     else if (user.TypeOfUser == Enums.UserType.KUPAC)
@@ -179,10 +149,10 @@ namespace Server.Services
                     SymmetricSecurityKey secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey.Value));
                     var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
                     var tokeOptions = new JwtSecurityToken(
-                        issuer: "http://localhost:44316", //url servera koji je izdao token
-                        claims: claims, //claimovi
-                        expires: DateTime.Now.AddYears(1), //vazenje tokena u minutama
-                        signingCredentials: signinCredentials //kredencijali za potpis
+                        issuer: "http://localhost:44316", 
+                        claims: claims, 
+                        expires: DateTime.Now.AddYears(1), 
+                        signingCredentials: signinCredentials 
                     );
                     string tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
                     LoginResponseDto loginResponseDto = new LoginResponseDto { Token = tokenString, User = new UserEditDto { Username = user.Username, Address = user.Address, DateOfBirth = user.DateOfBirth, Email = user.Email, NameLastname = user.NameLastname, UserImage = user.UserImage, Password = user.Password, TypeOfUser = user.TypeOfUser.ToString(), Id = user.Id }, LogedIn = true };

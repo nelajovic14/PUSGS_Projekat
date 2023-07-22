@@ -13,13 +13,13 @@ namespace Server.Infrastructure
         public DbSet<Article> Articles { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Comment> Comments { get; set; }
+
         public OrderDbContext(DbContextOptions options) : base(options)
         {
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            //Kazemo mu da pronadje sve konfiguracije u Assembliju i da ih primeni nad bazom
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(OrderDbContext).Assembly);
         }
     }

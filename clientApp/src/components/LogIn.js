@@ -27,16 +27,12 @@ export default function Login(){
 
     const responseGoogle = (response) => {
         console.log(response);
-        // Send the access token to your backend
         logExteranal(response);
-      }
+    }
 
-
-  
     const logExteranal =async (response)=>{
         const LogObject={provider:"GOOGLE",idToken:response.tokenId}
         const logresp=await LogInExternal(LogObject);
-        console.log(logresp)
         if(logresp.data.logedIn==true){
             localStorage.setItem('token'+logresp.data.user.id,logresp.data.token)
             const container = document.getElementById('root');
@@ -44,7 +40,7 @@ export default function Login(){
             root.render(<MainPage user={logresp.data.user}></MainPage>);
         }
         else{
-            setData("Wrong username or password!")
+            setData("Pogrešno ste uneli korisničko ime ili lozinku!")
             openDialogBox();
         }
     }
@@ -68,13 +64,11 @@ export default function Login(){
     }
 
         const login=async e=>{
-            
             e.preventDefault();
             if(validate()){
                 
                 const values={Username:username,Password:password};
                 const resp=await LogIn(values);
-                console.log(resp);
                 if(resp.data.logedIn==true){
                     localStorage.setItem('token'+resp.data.user.id,resp.data.token)
                     const container = document.getElementById('root');
@@ -82,23 +76,24 @@ export default function Login(){
                     root.render(<MainPage user={resp.data.user}></MainPage>);
                 }
                 else{
-                    setData("Wrong username or password!")
+                    setData("Pogrešno ste uneli korisničko ime ili lozinku!")
                     openDialogBox();
                 }
             }
         }
+        
         let nameError = "";
         let passwordError = "";
         const validate=()=>{
             
             if (!username) {
-                nameError = "Username field is required";
+                nameError = "Polje za korisničko ime je obavezno!";
                 setData(nameError)
                 openDialogBox();
             }
             
             if (!password) {
-                passwordError = "Password field is required";
+                passwordError = "Polje za lozinku je obavezno!";
                 setData(passwordError)
                 openDialogBox();
             }
@@ -116,34 +111,31 @@ export default function Login(){
 
     return(
         <div class="jumbotron text-center" style={{backgroundImage:`url(${image})`, height:750}}>  
-            <h2 class="bg-info">Please, log in :)</h2><br/><br/>
+            <h2 class="bg-info">Ulogujte se :)</h2><br/>
+            Molimo Vas, prijavite se kako bi pristupili aplikaciji :)<br/><br/>
             <p >
         <form onSubmit={login} > 
-            Username : &nbsp;<input type={"text"} name='username'  value={username} onChange={handleInputChanges}  ></input><br/><br/>
+            Korisničko ime : &nbsp;<input type={"text"} name='username'  value={username} onChange={handleInputChanges}  ></input><br/><br/>
             
-            Password : &nbsp;<input type={"password"} name='password' value={password} onChange={handleInputChanges}></input><br/><br/>
+            Lozinka : &nbsp;<input type={"password"} name='password' value={password} onChange={handleInputChanges}></input><br/><br/>
             
-            <input type={"submit"} name='uloguj' value={"Log in"} onChange={handleInputChanges} class="btn btn-info"></input><br/>
+            <input type={"submit"} name='uloguj' value={"Uloguj se"} onChange={handleInputChanges} class="btn btn-info"></input><br/>
         </form>
         <br/>
         <GoogleLogin
-  clientId="204473720538-b586qupb74fdgq0vdccc8vojnhm462o9"
-  buttonText="Login with Google"
-  onSuccess={responseGoogle}
-  onFailure={responseGoogle}
-  cookiePolicy={'single_host_origin'}
-scope="profile"
-/>
+        clientId="204473720538-b586qupb74fdgq0vdccc8vojnhm462o9"
+        buttonText="Logovanje putem google naloga"
+        onSuccess={responseGoogle}
+        onFailure={responseGoogle}
+        cookiePolicy={'single_host_origin'}
+        scope="profile"
+        />
         <br/><br/>
         
-      <br />
-      <br />
-
-
-        <input type={"submit"} name='registruj' value={"Register"} onClick={register} class="btn btn-primary"></input><br/></p>
+        <input type={"submit"} name='registruj' value={"Registruj se"} onClick={register} class="btn btn-primary"></input><br/></p>
         <Dialog onClose = {handleClose} open = {openDialog}>
-    <DialogTitle> LogiIn page </DialogTitle>
-            <div class="p-5 text-center bg-image rounded-3" style={{ backgroundImage: `url(${backImage})`}}>
+        <DialogTitle> Logovanje </DialogTitle>
+            <div class="p-5 text-center bg-image rounded-3" style={{ backgroundColor: "tomato"}}>
             <div class="mask">
                 <div class="d-flex justify-content-center align-items-center h-100">
                 <div class="text-black">

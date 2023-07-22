@@ -18,13 +18,13 @@ const LayoutKupac = () => {
         <ul  class="list-inline">
          
           <li>
-            <Link to="/EditInformation">Edit</Link>
+            <Link to="/EditInformation"><label style={{fontSize:20, fontFamily: "Lucida console, Courier New"}}>Izmeni profil &nbsp;</label></Link>
           </li>
           <li >
-            <Link to="/NewOrder">New Order</Link>
+            <Link to="/NewOrder"><label style={{fontSize:20, fontFamily: "Lucida console, Courier New"}}>Novo poručivanje &nbsp;</label></Link>
           </li>
           <li>
-            <Link to="/OldOrders">Old Orders</Link>
+            <Link to="/OldOrders"><label style={{fontSize:20, fontFamily: "Lucida console, Courier New"}}>Stare porudžbine </label></Link>
           </li>
         </ul></div>
       </nav>

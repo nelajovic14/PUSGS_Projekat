@@ -20,7 +20,6 @@ export default function ShowOrder(props){
 
     const GetInfo=async (e)=>{
         const resp=await GetOrdersToShow(props.order,config);
-        console.log(resp);
         setArticles(resp.data.articles);
         resp.data.articles.forEach(element => {
             getImage2(element.id,config);
@@ -35,9 +34,6 @@ export default function ShowOrder(props){
             cost+=(element.qunatity+0)*(element.price+0);
             console.log(cost);
         });
-        console.log(cost);
-        console.log(resp.data.finalPrice);
-
     }
 
     useEffect(() =>{
@@ -57,38 +53,38 @@ export default function ShowOrder(props){
         event.preventDefault();
         const container = document.getElementById('root');
         const root = ReactDOMClient.createRoot(container);
-        root.render(<ArticleReview user={props.user} article={element} order={props.order}></ArticleReview>);
+        root.render(<ArticleReview user={props.user} article={element} order={deliveryTime}></ArticleReview>);
        
     }
 
     const elementi=articles.map(element => <tr><td>
         {element.name}</td><td >{element.price}</td> <td>{element.qunatity}</td> <td> <span>{(element.qunatity+0)*(element.price+0)}</span></td><td>{element.description}</td>
-        <td><img src={localStorage.getItem('url-article'+element.id)} height={100} width={100} alt="Image"/></td>
-        <td><input type={"button"} class="btn btn-link" onClick={(event)=>showArticle(event,element)}  value={"Show Article"}/></td>
+        <td><img src={localStorage.getItem('url-article'+element.id)} height={100} width={100} alt="slika"/></td>
+        <td><input type={"button"} class="btn btn-link" onClick={(event)=>showArticle(event,element)}  value={"Prikaži proizvod"}/></td>
         </tr>);
 
     return(
         <div>
             <div class="container text-center">
-                <div class="alert alert-warning"><strong><h1>Order</h1></strong></div>
-                <b>Final price : {finalPrice}</b><br/><br/>
-                <b>Order time : {orderTime}</b><br/><br/>
-                <b>Delivery time : {deliveryTime}</b><br/><br/>
-                <b>Comment : {comment}</b><br/><br/>
-                <b>Address : {address}</b><br/><br/>
+                <div class="alert alert-warning"><strong><h1>Porudžbina</h1></strong></div>
+                <b>Konačna cena : {finalPrice}</b><br/><br/>
+                <b>Vreme poručivanja : {orderTime}</b><br/><br/>
+                <b>Vreme isporuke : {deliveryTime}</b><br/><br/>
+                <b>Komentar : {comment}</b><br/><br/>
+                <b>Adresa : {address}</b><br/><br/>
                 <table class="table table-bordered">
                     <tr>
-                        <td ><b>Name</b></td>
-                        <td><b>Price</b></td>
-                        <td><b>Quantity</b></td>
-                        <td><b>Sum</b></td>
-                        <td><b>Description</b></td>
-                        <td><b>Image</b></td>
-                        <td><b>Show Article</b></td>
+                        <td ><b>Naziv</b></td>
+                        <td><b>Cena</b></td>
+                        <td><b>Količina</b></td>
+                        <td><b>Cena proizvoda</b></td>
+                        <td><b>Opis</b></td>
+                        <td><b>Slika</b></td>
+                        <td><b>Prikaži proizvod</b></td>
                         </tr>
                         {elementi}
             </table>
-            <input type={"submit"} name='back' value={"Back"} onClick={back} class="btn btn-warning"></input><br/>
+            <input type={"submit"} name='back' value={"Nazad"} onClick={back} class="btn btn-warning"></input><br/>
             </div>
         </div>
     )

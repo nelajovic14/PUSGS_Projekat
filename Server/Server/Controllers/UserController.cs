@@ -64,7 +64,14 @@ namespace Server.Controllers
         [HttpPost("register")]
         public IActionResult Register([FromBody] UserDto userDto)
         {
-            return Ok(_userService.AddUser(userDto));
+            if (userDto != null)
+            {
+                return Ok(_userService.AddUser(userDto));
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPost("loginExternal")]
@@ -84,14 +91,28 @@ namespace Server.Controllers
         [Authorize(Roles = "user")]
         public IActionResult Edit([FromBody] UserEditDto userDto)
         {
-            return Ok(_userService.Edit(userDto));
+            if (userDto != null)
+            {
+                return Ok(_userService.Edit(userDto));
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPut("verificate")]
         [Authorize(Roles = "admin")]
         public IActionResult Verificate([FromBody] UserEditDto userLoginDto)
         {
-            return Ok(_userService.Verificate(userLoginDto));
+            if (userLoginDto != null)
+            {
+                return Ok(_userService.Verificate(userLoginDto));
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet("getRequest")]

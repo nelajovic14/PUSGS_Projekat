@@ -23,7 +23,6 @@ export default function ShowArticle(props){
 
     const GetAllComm=async (e)=>{
         const respForComments= await GetAllCommentsForArticle(props.article.id,config);
-       console.log(respForComments.data);
        if(respForComments.data!=undefined){
        setComments(respForComments.data);
        }    
@@ -32,7 +31,6 @@ export default function ShowArticle(props){
     const GetStars=async (e)=>{
         const respRate=await GetRate(props.article.id,config);
        setRate(respRate.data.stars)
-       console.log("resp:"+respRate.data)   
     }
 
 
@@ -40,7 +38,6 @@ export default function ShowArticle(props){
 
         const resp=getImage2(props.article.id,config);
        setImageUrl(localStorage.getItem('url-article'+props.article.id));
-        console.log(resp);
        GetAllComm();
        GetStars();
     },[]);
@@ -56,30 +53,27 @@ export default function ShowArticle(props){
    const elementi=comments.map(element => <tr><td>
     {element.description}</td>
     </tr>);
-const maxCircuits = 5; // The maximum number of circuits
+const maxCircuits = 5; 
 
     return(
         <div class="container text-center">
-            <div class="alert alert-warning"><strong><h1>ARTICLE</h1></strong></div>
-               Name : <label><b>{naziv}</b></label><br/><br/>
-               Price : <label><b>{cena}</b></label><br/><br/>
-               Quantity : <label><b>{kolicina}</b></label><br/><br/>
-               Description : <label><b>{opis}</b></label><br/><br/>
-            
-            <img src={imageUrl} height={300} width={300} alt="Image"/><br/><br/>
-            <br/> {Array(maxCircuits)
-        .fill()
-        .map((_, index) => (
-            <Star size={80} color="gold" filled={index<rate} />
-        ))}<br/>
-            <h3>Comments:</h3>
+            <div class="alert alert-warning"><strong><h1>PROIZVOD</h1></strong> </div>
+            <div >
+               Naziv : <label><b>{naziv}</b></label><br/>
+               Cena : <label><b>{cena}</b></label><br/>
+               Količina : <label><b>{kolicina}</b></label><br/>
+               Opis : <label><b>{opis}</b></label>
+               </div>
+            <img src={imageUrl} height={300} width={300} alt="slika"/> {Array(maxCircuits)
+            .fill().map((_, index) => (
+                <Star size={80} color="gold" filled={index<rate} />
+            ))}
+            <h3>Komentari:</h3>
             <table class="table table-bordered">
                 {elementi}
             </table>
-           
-           <br/><br/>
-         <input type={"submit"} name='back' value={"Back"} onClick={back} class="btn btn-warning"/><br/>
             
+            <input type={"submit"} name='back' value={"Nazad"} onClick={back} class="btn btn-warning"/><br/>               
         </div>
     )
 }

@@ -13,7 +13,6 @@ namespace Server.Dto
         public double Price { get; set; }
         [Required]
         public string Address { get; set; }
-        [Required]
         public string Comment { get; set; }
         //public User Customer { get; set; }
         [Required]

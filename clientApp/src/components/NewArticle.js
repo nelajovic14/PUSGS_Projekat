@@ -48,29 +48,29 @@ export default function NewArticleFunction(props){
     const validate=()=>{
         var valid=true;
         if (naziv=='') {
-            setData("You have to type name of article!");
+            setData("Naziv proizvoda je obavezan!");
             openDialogBox();
             valid=false;
         }
         
         else if (opis=='') {
-            setData("You have to type description of article!");
+            setData("Opis proizvoda je obavezan!");
             openDialogBox();
             valid=false;
         }
 
         else if (kolicina==0) {
-            setData("Can not have 0 articles");
+            setData("Ne možete dodati proizvodi za koji nemate zalihe!");
             openDialogBox();
             valid=false;
         }
         if (cena<0) {
-            setData("Price is positiv number");
+            setData("Cena je obavezna!");
             openDialogBox();
             valid=false;
         }
         else if(!imageUrl){
-            let imageError = "Image is required";
+            let imageError = "Slika je obavezna!";
             setData(imageError);
             openDialogBox();
             valid=false;
@@ -86,23 +86,18 @@ export default function NewArticleFunction(props){
             };
             const Article={name:naziv,description:opis,qunatity:kolicina,price:cena,userId:props.user.id};
             const resp=await AddArticle(Article,config);
-            console.log(resp);
-            if(resp.data!=""){
-                setData("successfully add new article!")
+            if(resp.status==200){
+                setData("Uspešno ste dodali novi proizvod!")
                 openDialogBox();
             }
             else{
-                setData("Something is wrong, you can not add new article!")
+                setData("Dodavanje novog proizvoda, trenutno nije moguće!")
                 openDialogBox();
             }
             if(file!=null){
                 const response=AddImage(file,resp.data.id,config);
-                console.log(response);
             }
         }
-        
-
-
     }
 
     function handleFileSelect(event) {
@@ -111,25 +106,25 @@ export default function NewArticleFunction(props){
         setImageUrl(file);
         const formData = new FormData();
         formData.append("image", file);
-        // send formData to the server
         setFile(formData);
         setImageUrl(file)
-      }
+    }
 
     return(
         <div class="container text-center">
-            <div class="alert alert-warning"><strong><h1>NEW ARTICLE</h1></strong></div>
+            <div class="alert alert-warning"><strong><h1>NOVI PROIZVOD</h1></strong></div>
             <form onSubmit={add}>
-               Name : <input  type={"text"} name="naziv" value={naziv} onChange={handleInputChanges}></input><br/><br/>
-               Price : <input  type={"number"} name="cena" value={cena} onChange={handleInputChanges}></input><br/><br/>
-               Quantity : <input  type={"number"} name="kolicina" value={kolicina} onChange={handleInputChanges}></input><br/><br/>
-               Description : <input  type={"text"} name="opis" value={opis} onChange={handleInputChanges}></input><br/><br/>
-               Image: <input type="file" onChange={handleFileSelect} style={{"marginLeft":"300px"}}/>
+               Naziv : <input  type={"text"} name="naziv" value={naziv} onChange={handleInputChanges}></input><br/><br/>
+               Cena : <input  type={"number"} name="cena" value={cena} onChange={handleInputChanges}></input><br/><br/>
+               Količina : <input  type={"number"} name="kolicina" value={kolicina} onChange={handleInputChanges}></input><br/><br/>
+               Opis : <input  type={"text"} name="opis" value={opis} onChange={handleInputChanges}></input><br/><br/>
+               Slika: <input type="file" onChange={handleFileSelect} style={{"marginLeft":"450px"}}/>
             {imageUrl && <img src={URL.createObjectURL(imageUrl)} height={300} width={300} />}<br/><br/>
-               <input type={"submit"} name='addnes' value={"Add new"} onChange={handleInputChanges} class="btn btn-info"></input><br/>
+               <input type={"submit"} name='addnes' value={"DODAJ"} onChange={handleInputChanges} class="btn btn-info"></input><br/>
             </form>
             <Dialog onClose = {handleClose} open = {openDialog}>
-            <div class="p-5 text-center bg-image rounded-3" style={{ backgroundImage: `url(${backImage})`}}>
+            <DialogTitle> Proizvod </DialogTitle>
+            <div class="p-5 text-center bg-image rounded-3" style={{ backgroundColor: "tomato"}}>
             <div class="mask">
                 <div class="d-flex justify-content-center align-items-center h-100">
                 <div class="text-black">

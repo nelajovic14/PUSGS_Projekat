@@ -21,13 +21,10 @@ export default function NewOrder(props){
 
     const tableArticles=async (e)=>{
         const resp=await GetAllArticles(config);
-        console.log(resp);
         setElements(resp.data)
         resp.data.forEach(element => {
             getImage2(element.id,config);
         });
-        console.log(elements);
-
     }
         
     useEffect(() =>{
@@ -56,25 +53,19 @@ export default function NewOrder(props){
     const valid=()=>{
         var valid=true;
         if(address==''){
-            setData("You have to write your address!");
-            openDialogBox();
-            valid=false;
-        }
-        else if(comment==""){
-            setData("You have to type some comment!");
+            setData("Adresu je obavezno uneti pre poručivanja!");
             openDialogBox();
             valid=false;
         }
         else if(listOfArticles.length==0){
-            setData("Order something! You article list is empty!");
+            setData("Ne možete poručiti praznu listu!");
             openDialogBox();
             valid=false;
         }
         return valid;
     }
 
-    const poruci=async (event,element)=>{
-       
+    const poruci=async (event,element)=>{      
         event.preventDefault();
         const config = {
             headers: {  Authorization: 'Bearer ' +  localStorage.getItem('token'),}
@@ -82,19 +73,19 @@ export default function NewOrder(props){
         const Order={ address:address, comment:comment, userId:props.user.id, articles: listOfArticles}
         if(valid()){
             const resp =await AddOrder(Order,config);
-            console.log(resp);
             if(resp.data.id==-1 || resp.data==''){
-                setData("You can not order this articles!");
+                setData("Ove proizvode nije moguće poručiti!");
                 openDialogBox();
             }
             else{
-                setData("Successfully order! "+"Final price : "+resp.data.finalyPrice+"\nDelivery date and time : "+resp.data.deliveryTime.split('T')[0] + " at "+ resp.data.deliveryTime.split('T')[1].split('.')[0]);
+                setData("Uspešno poručeno! "+"Konačna cena : "+resp.data.result.finalyPrice+
+                "\nVreme i datum isporuke : "+resp.data.result.deliveryTime.split('T')[0] + " u "+ 
+                resp.data.result.deliveryTime.split('T')[1].split('.')[0]);
                 openDialogBox();
                 setList([]);
                 tableArticles();
             }
         }
-
     }
 
     const addQuantity=(event,element)=>{
@@ -103,7 +94,7 @@ export default function NewOrder(props){
         setQ(kol.current.value);
         var list=listOfArticles;
        if(kol.current.value<=0){
-            setData("Can not order 0 articles!")
+            setData("Lista sa proizvodima mora imati bar jednu stavku!")
             openDialogBox();
         }
         else if(element.qunatity>=kol.current.value){
@@ -112,7 +103,7 @@ export default function NewOrder(props){
             setList(list);
         }
         else{
-            setData("There is no enough of this article!")
+            setData("Nema dovoljno ovog proizvoda na stanju!")
             openDialogBox();
         }
     }
@@ -120,7 +111,7 @@ export default function NewOrder(props){
     const addOnList=(event,element)=>{
         
         event.preventDefault();
-        setData(<div>Quantity : <input type={"number"} ref={kol} ></input><input type="submit" name="order" value={"order"} onClick={(event)=>addQuantity(event,element)} /></div>)
+        setData(<div>Količina : <input type={"number"} ref={kol} ></input><input type="submit" name="order" value={"poruči"} onClick={(event)=>addQuantity(event,element)} /></div>)
         openDialogBox();
        
     }
@@ -150,52 +141,52 @@ export default function NewOrder(props){
     const elementi=elements.map(element => <tr><td>
         {element.name}</td><td >{element.price}</td><td >
         {element.qunatity}</td><td>{element.description}</td>
-        <td><img src={localStorage.getItem('url-article'+element.id)} height={100} width={100} alt="Image"/></td>
-        <td><input type={"button"} class="btn btn-link" onClick={(event)=>addOnList(event,element)}  value={"Order"}></input></td>
-        <td><input type={"button"} class="btn btn-link" onClick={(event)=>showArticle(event,element)}  value={"Show"}></input></td>
+        <td><img src={localStorage.getItem('url-article'+element.id)} height={100} width={100} alt="slika"/></td>
+        <td><input type={"button"} class="btn btn-link" onClick={(event)=>addOnList(event,element)}  value={"poruči"}></input></td>
+        <td><input type={"button"} class="btn btn-link" onClick={(event)=>showArticle(event,element)}  value={"prikaži"}></input></td>
         </tr>);
 
     const articles=listOfArticles.map(element => <tr><td>
     {element.name}</td><td>{element.qunatity}</td><td >{element.price}</td><td>{element.description}</td>
-    <td><img src={localStorage.getItem('url-article'+element.id)} height={100} width={100} alt="Image"/></td><td><input type={"button"} class="btn btn-link" onClick={(event)=>deletefromList(event,element)}  value={"Delete"}/></td>
+    <td><img src={localStorage.getItem('url-article'+element.id)} height={100} width={100} alt="slika"/></td><td><input type={"button"} class="btn btn-link" onClick={(event)=>deletefromList(event,element)}  value={"obriši"}/></td>
     </tr>);
 
     return(
             <div>
             <div class="container text-center">
-                <div class="alert alert-warning"><strong><h1>Articles</h1></strong></div>
+                <div class="alert alert-warning"><strong><h1>Proizvodi</h1></strong></div>
                 <table class="table table-bordered">
                     <tr>
-                        <td ><b>Name</b></td>
-                        <td><b>Price</b></td>
-                        <td ><b>Quantity</b></td>
-                        <td><b>Description</b></td>
-                        <td><b>Image</b></td>
-                        <td><b>Order</b></td>
-                        <td><b>Show Article</b></td>
+                        <td ><b>Naziv</b></td>
+                        <td><b>Cena</b></td>
+                        <td ><b>Količina</b></td>
+                        <td><b>Opis</b></td>
+                        <td><b>Slika</b></td>
+                        <td><b>Poruči</b></td>
+                        <td><b>Prikaži proizvod</b></td>
                         </tr>
                         {elementi}
             </table>
             <br/><br/>
-            <div class="alert alert-info"><strong><h1>Ordered Articles</h1></strong></div>
+            <div class="alert alert-info"><strong><h1>Poruči Proizvode</h1></strong></div>
             <table class="table table-bordered">
                     <tr>
-                        <td ><b>Name</b></td>
-                        <td ><b>Quantity</b></td>
-                        <td><b>Price</b></td>
-                        <td><b>Description</b></td>
-                        <td><b>Image</b></td>
+                        <td ><b>Naziv</b></td>
+                        <td ><b>Količina</b></td>
+                        <td><b>Cena</b></td>
+                        <td><b>Opis</b></td>
+                        <td><b>Slika</b></td>
                         </tr>
                         {articles}
             </table><br/>
-            <div>Address :  <input type={"text"} name='address' value={address} onChange={handleInputChanges}  ></input></div><br/>
-                <div>Comment :  <input type={"text"} name='comment' value={comment} onChange={handleInputChanges}  ></input></div><br/>
-                <input type={"submit"} name='poruci' value={"poruci"} onClick={poruci}></input><br/>
+            <div>Adresa :  <input type={"text"} name='address' value={address} onChange={handleInputChanges}  ></input></div><br/>
+                <div>Komentar :  <input type={"text"} name='comment' value={comment} onChange={handleInputChanges}  ></input></div><br/>
+                <input type={"submit"} name='poruci' value={"poruči"} class="btn btn-primary" onClick={poruci}></input><br/>
             </div>
 
             <Dialog onClose = {handleClose} open = {openDialog}>
-            <DialogTitle> Article quantity </DialogTitle>
-            <div class="p-5 text-center bg-image rounded-3">
+            <DialogTitle> Poručivanje proizvoda </DialogTitle>
+            <div class="p-5 text-center bg-image rounded-3" style={{ backgroundColor: "tomato"}}>
             <div class="mask">
                 <div class="d-flex justify-content-center align-items-center h-100">
                 <div class="text-black">
